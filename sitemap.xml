@@ -3,25 +3,25 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://jaydonsun.github.io/categories/</loc>
+    <loc>https://www.jaydonsun.com/categories/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://jaydonsun.github.io/</loc>
+    <loc>https://www.jaydonsun.com/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://jaydonsun.github.io/series/</loc>
+    <loc>https://www.jaydonsun.com/series/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://jaydonsun.github.io/tags/</loc>
+    <loc>https://www.jaydonsun.com/tags/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
