@@ -6,9 +6,190 @@
     <description>Recent content in Categories on Jaydon&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>CC BY 4.0 CN</copyright>
+    <lastBuildDate>Thu, 22 Jul 2021 12:13:40 +0800</lastBuildDate>
     
         <atom:link href="https://www.jaydonsun.com/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Docker Dockercompose Install</title>
+      <link>https://www.jaydonsun.com/2021/07/docker-dockercompose-install/</link>
+      <pubDate>Thu, 22 Jul 2021 16:45:14 +0800</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2021/07/docker-dockercompose-install/</guid>
+      <description>安装docker 0.更新软件包，确保服务器的软件包是最新的 sudo yum update -y 1.安装必要依赖 sudo yum install -y yum-utils device-mapper-persistent-data lvm2 2.添加软件源信息 sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 3.更新 yum 缓存 sudo yum</description>
+    </item>
+    
+    <item>
+      <title>Wiznote docker部署</title>
+      <link>https://www.jaydonsun.com/2021/07/wiznote-install/</link>
+      <pubDate>Thu, 22 Jul 2021 15:38:39 +0800</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2021/07/wiznote-install/</guid>
+      <description>docker run --name wiz --restart=always -it -d -v //wizdata:/wiz/storage -v /etc/localtime:/etc/localtime -p 80:80 -p 9269:9269/udp wiznote/wizserver</description>
+    </item>
+    
+    <item>
+      <title>Cloudreve Service配置</title>
+      <link>https://www.jaydonsun.com/2021/07/cloudreve-service/</link>
+      <pubDate>Thu, 22 Jul 2021 12:13:40 +0800</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2021/07/cloudreve-service/</guid>
+      <description>[Unit] Description=Cloudreve Documentation=https://docs.cloudreve.org After=network.target Wants=network.target [Service] WorkingDirectory=/data/wwwroot/pan.sunjingdong.com ExecStart=/data/wwwroot/pan.sunjingdong.com/cloudreve Restart=on-abnormal RestartSec=5s KillMode=mixed StandardOutput=null StandardError=syslog [Install] WantedBy=multi-user.target</description>
+    </item>
+    
+    <item>
+      <title>LNMP yum安装</title>
+      <link>https://www.jaydonsun.com/2021/07/lnmp-install-yum/</link>
+      <pubDate>Thu, 22 Jul 2021 12:00:46 +0800</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2021/07/lnmp-install-yum/</guid>
+      <description>yum install -y php72 php72-php-fpm php72-php-cli php72-php-bcmath php72-php-gd php72-php-json php72-php-mbstring php72-php-mcrypt php72-php-mysqlnd php72-php-opcache php72-php-pdo php72-php-pecl-crypto php72-php-pecl-mcrypt php72-php-soap php72-php-pecl-zip php72-php-process php72-php-pecl-yaf php72-php-xml php72-php-pecl-swoole4 php72-php-ldap php72-php-pear php72-php-xml 安装NGINX 1、配置yum源 sudo rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm 2、安装nginx sudo yum install -y nginx 3、启动nginx sudo systemctl start</description>
+    </item>
+    
+    <item>
+      <title>Centos7安装Docker</title>
+      <link>https://www.jaydonsun.com/2021/07/centos7-docker-install/</link>
+      <pubDate>Thu, 22 Jul 2021 11:03:26 +0800</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2021/07/centos7-docker-install/</guid>
+      <description>0.更新软件包，确保服务器的软件包是最新的 sudo yum update -y 1.安装必要依赖 sudo yum install -y yum-utils device-mapper-persistent-data lvm2 2.添加软件源信息 sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 3.更新 yum 缓存 sudo yum makecache fast 4.安装 Docker sudo</description>
+    </item>
+    
+    <item>
+      <title>LNMP编译安装</title>
+      <link>https://www.jaydonsun.com/2021/07/lnmp-install/</link>
+      <pubDate>Thu, 22 Jul 2021 10:56:14 +0800</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2021/07/lnmp-install/</guid>
+      <description>1.安装编译环境 yum -y install apr* autoconf automake numactl bison bzip2-devel cpp curl-devel fontconfig-devel freetype-devel gcc gcc-c++ gd-devel gettext-devel kernel-headers keyutils-libs-devel krb5-devel libcom_err-devel libpng-devel libjpeg* libsepol-devel libselinux-devel libstdc++-devel libtool* libxml2-devel libXpm* libxml* libXaw-devel libXmu-devel libtiff* make openssl-devel patch pcre-devel perl php-common php-gd telnet zlib-devel libtirpc-devel gtk* ntpstat na* bison* lrzsz cmake ncurses-devel libzip-devel libxslt-devel gdbm-devel readline-devel gmp-devel 2.创建用户 groupadd</description>
+    </item>
+    
+    <item>
+      <title>Nginx安装</title>
+      <link>https://www.jaydonsun.com/2021/07/nginx-install/</link>
+      <pubDate>Thu, 22 Jul 2021 10:50:23 +0800</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2021/07/nginx-install/</guid>
+      <description>什么是Nginx？ Nginx (engine x) 是一个高性能的HTTP和反向代理web服务器，同时也提供了IMAP/POP3/SMTP服务。Nginx是由伊戈尔·赛</description>
+    </item>
+    
+    <item>
+      <title>Linux学习笔记-15</title>
+      <link>https://www.jaydonsun.com/2020/05/linuxnote-15/</link>
+      <pubDate>Sun, 31 May 2020 23:44:45 +0000</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2020/05/linuxnote-15/</guid>
+      <description>使用DHCP动态管理主机地址 动态主机配置协议（DHCP，Dynamic Host Configuration Protocol），该协议用于自动管理局域网内主机的IP地址、子网</description>
+    </item>
+    
+    <item>
+      <title>Linux学习笔记-14</title>
+      <link>https://www.jaydonsun.com/2020/05/linuxnote-14/</link>
+      <pubDate>Sat, 30 May 2020 23:04:16 +0000</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2020/05/linuxnote-14/</guid>
+      <description>使用Samba或NFS实现文件共享 Samba文件共享服务 yum install samba 安装samba /etc/samba/smb.conf 主配置文件 由于在Samba服务程序的主配置文件中，注释信息行实</description>
+    </item>
+    
+    <item>
+      <title>Linux学习笔记-13</title>
+      <link>https://www.jaydonsun.com/2020/05/linuxnote-13/</link>
+      <pubDate>Fri, 29 May 2020 23:03:35 +0000</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2020/05/linuxnote-13/</guid>
+      <description>2020年5月29日 周五 使用vsftpd服务传输文件 文件传输协议 FTP是一种在互联网中进行文件传输的协议，基于客户端/服务器模式，默认使用2</description>
+    </item>
+    
+    <item>
+      <title>Linux学习笔记-12</title>
+      <link>https://www.jaydonsun.com/2020/05/linuxnote-12/</link>
+      <pubDate>Sun, 24 May 2020 22:42:39 +0000</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2020/05/linuxnote-12/</guid>
+      <description>使用Apache服务部署静态网站 部署Apache 把光盘设备中的系统镜像挂载到/media/cdrom目录 [root@linuxprobe ~]# mkdir -p /media/cdrom [root@linuxprobe ~]# mount /dev/cdrom /media/cdrom mount: /dev/sr0 is write-protected, mounting read-only 使用</description>
+    </item>
+    
+    <item>
+      <title>Linux学习笔记-11</title>
+      <link>https://www.jaydonsun.com/2020/05/linuxnote-11/</link>
+      <pubDate>Sat, 23 May 2020 23:01:07 +0000</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2020/05/linuxnote-11/</guid>
+      <description>使用ssh服务管理远程主机 配置网卡 4种配置方式 创建网络会话 RHEL和CentOS系统默认使用NetworkManager来提供网络服务，这是</description>
+    </item>
+    
+    <item>
+      <title>Linux学习笔记-10</title>
+      <link>https://www.jaydonsun.com/2020/05/linuxnote-10/</link>
+      <pubDate>Fri, 22 May 2020 22:00:40 +0000</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2020/05/linuxnote-10/</guid>
+      <description>iptables与firewalld防火墙 配置网卡的4种方法 1.修改配置文件 ​ /etc/sysconfig/network-scripts/</description>
+    </item>
+    
+    <item>
+      <title>Linux学习笔记-9</title>
+      <link>https://www.jaydonsun.com/2020/05/linuxnote-9/</link>
+      <pubDate>Sun, 17 May 2020 21:59:31 +0000</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2020/05/linuxnote-9/</guid>
+      <description>软硬方式链接 硬链接（hard link）：可以将它理解为一个“指向原始文件inode的指针”，系统不为它分配独立的inode和文件。所以，硬链</description>
+    </item>
+    
+    <item>
+      <title>Linux学习笔记-8</title>
+      <link>https://www.jaydonsun.com/2020/05/linuxnote-8/</link>
+      <pubDate>Sat, 16 May 2020 23:58:34 +0000</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2020/05/linuxnote-8/</guid>
+      <description>存储结构与磁盘划分 在Linux系统中，目录、字符设备、块设备、套接字、打印机等都被抽象成了文件，即刘遄老师所一直强调的“Linux系统中一切</description>
+    </item>
+    
+    <item>
+      <title>Linux学习笔记-7</title>
+      <link>https://www.jaydonsun.com/2020/05/linuxnote-7/</link>
+      <pubDate>Fri, 15 May 2020 22:57:43 +0000</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2020/05/linuxnote-7/</guid>
+      <description>文件权限与归属 -：普通文件 d：目录文件 l：链接文件 b：块设备文件 c：字符设备文件 p：管道文件 在Linux系统中，每个文件都有所属的所有者和所</description>
+    </item>
+    
+    <item>
+      <title>Linux学习笔记-6</title>
+      <link>https://www.jaydonsun.com/2020/05/linuxnote-6/</link>
+      <pubDate>Sun, 10 May 2020 21:56:58 +0000</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2020/05/linuxnote-6/</guid>
+      <description>for条件循环语句 for循环语句允许脚本一次性读取多个信息，然后逐一对信息进行操作处理，当要处理的数据有范围时，使用for循环语句再适合不过</description>
+    </item>
+    
+    <item>
+      <title>Linux学习笔记-5</title>
+      <link>https://www.jaydonsun.com/2020/05/linuxnote-5/</link>
+      <pubDate>Sat, 09 May 2020 21:55:58 +0800</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2020/05/linuxnote-5/</guid>
+      <description>Vim编辑器 “在Linux系统中一切都是文件，而配置一个服务就是在修改其配置文件的参数”。而且在日常工作中大家也肯定免不了要编写文档，这些工</description>
+    </item>
+    
+    <item>
+      <title>Linux学习笔记-4</title>
+      <link>https://www.jaydonsun.com/2020/05/linuxnote-4/</link>
+      <pubDate>Fri, 08 May 2020 22:55:02 +0800</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2020/05/linuxnote-4/</guid>
+      <description>tar命令-对文件打包或者解压 tar czvf 打包 tar xzvf 解压 后缀名为.tar.gz 或 .tar.bz2 tar xvf 自动识别后缀解压 默认解压到当前目录，加-C参数，指定解压目录 gr</description>
+    </item>
+    
+    <item>
+      <title>Linux学习笔记-3</title>
+      <link>https://www.jaydonsun.com/2020/05/linuxnote-3/</link>
+      <pubDate>Sun, 03 May 2020 23:53:40 +0800</pubDate>
+      
+      <guid>https://www.jaydonsun.com/2020/05/linuxnote-3/</guid>
+      <description>继续讲解了常用的系统命令，这些命令需要记住 ifconfig 查看网卡配置与网络状态 uname 查看系统内核与系统版本，uname -a 搭配-a参数完整查看信息 uptime 查看系统负</description>
+    </item>
     
   </channel>
 </rss>

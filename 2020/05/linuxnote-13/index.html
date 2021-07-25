@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <title>
+        Linux学习笔记-13 - Jaydon&#39;s Blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="2020年5月29日 周五 使用vsftpd服务传输文件 文件传输协议 FTP是一种在互联网中进行文件传输的协议，基于客户端/服务器模式，默认使用2" />
+    <meta name="generator" content="Hugo 0.85.0 with theme pure" />
+    <title>Linux学习笔记-13 - Jaydon&#39;s Blog</title>
+    
+    
+    <link rel="stylesheet" href="https://www.jaydonsun.com/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="Linux学习笔记-13" />
+<meta property="og:description" content="2020年5月29日 周五 使用vsftpd服务传输文件 文件传输协议 FTP是一种在互联网中进行文件传输的协议，基于客户端/服务器模式，默认使用2" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.jaydonsun.com/2020/05/linuxnote-13/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-05-29T23:03:35+00:00" />
+<meta property="article:modified_time" content="2020-05-29T23:03:35+00:00" />
+
+<meta itemprop="name" content="Linux学习笔记-13">
+<meta itemprop="description" content="2020年5月29日 周五 使用vsftpd服务传输文件 文件传输协议 FTP是一种在互联网中进行文件传输的协议，基于客户端/服务器模式，默认使用2"><meta itemprop="datePublished" content="2020-05-29T23:03:35+00:00" />
+<meta itemprop="dateModified" content="2020-05-29T23:03:35+00:00" />
+<meta itemprop="wordCount" content="4049">
+<meta itemprop="keywords" content="linux," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Linux学习笔记-13"/>
+<meta name="twitter:description" content="2020年5月29日 周五 使用vsftpd服务传输文件 文件传输协议 FTP是一种在互联网中进行文件传输的协议，基于客户端/服务器模式，默认使用2"/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/jaydonsun" target="_blank">
+            <img class="img-circle img-rotate" src="https://www.jaydonsun.com/avatar.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Jaydon</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Just do it !</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Beijing, China</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="想要查找什么..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">首页</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">归档</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">分类</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">标签</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">关于</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content"><p>Welcome to my blog~</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> 标签</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://www.jaydonsun.com/tags/cloudreve/" class="tag-list-link" rel="1">cloudreve<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/docker/" class="tag-list-link" rel="1">docker<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/linux/" class="tag-list-link" rel="18">linux<span
+               class="tag-list-count">18</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/lnmp/" class="tag-list-link" rel="2">lnmp<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/nginx/" class="tag-list-link" rel="1">nginx<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/wiznote/" class="tag-list-link" rel="1">wiznote<span
+               class="tag-list-count">1</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> 分类</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://www.jaydonsun.com/categories/cloudreve/" class="category-list-link">cloudreve</a><span class="category-list-count">1</span></li>
+            <li class="category-list-item"><a href="https://www.jaydonsun.com/categories/linux/" class="category-list-link">linux</a><span class="category-list-count">18</span></li>
+            <li class="category-list-item"><a href="https://www.jaydonsun.com/categories/lnmp/" class="category-list-link">lnmp</a><span class="category-list-count">1</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> 标签</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/cloudreve/" class="tag-list-link">cloudreve</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/docker/" class="tag-list-link">docker</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/linux/" class="tag-list-link">linux</a><span
+                    class="tag-list-count">18</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/lnmp/" class="tag-list-link">lnmp</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/nginx/" class="tag-list-link">nginx</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/wiznote/" class="tag-list-link">wiznote</a><span
+                    class="tag-list-count">1</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+<div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/docker-dockercompose-install/" class="title">Docker Dockercompose Install</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 16:45:14 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/wiznote-install/" class="title">Wiznote docker部署</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 15:38:39 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/cloudreve-service/" class="title">Cloudreve Service配置</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 12:13:40 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/lnmp-install-yum/" class="title">LNMP yum安装</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 12:00:46 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/centos7-docker-install/" class="title">Centos7安装Docker</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 11:03:26 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">文章目录</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2020/05/linuxnote-13/"
+    >Linux学习笔记-13</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://www.jaydonsun.com/2020/05/linuxnote-13/" class="article-date">
+  <time datetime="2020-05-29 23:03:35 &#43;0000 UTC" itemprop="datePublished">2020-05-29</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/linux/"> linux </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/linux/"> linux </a>
+  </span>
+
+        <span class="post-comment"><i class="icon icon-comment"></i>&nbsp;<a href="/2020/05/linuxnote-13/#comments"
+            class="article-comment-link">评论</a></span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 4049字</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 9分 </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>2020年5月29日 周五</p>
+<h2 id="使用vsftpd服务传输文件">使用vsftpd服务传输文件</h2>
+<h3 id="文件传输协议">文件传输协议</h3>
+<p>FTP是一种在互联网中进行文件传输的协议，基于客户端/服务器模式，默认使用20、21号端口，其中端口20（数据端口）用于进行数据传输，端口21（命令端口）用于接受客户端发出的相关FTP命令与参数。FTP服务器普遍部署于内网中，具有容易搭建、方便管理的特点。而且有些FTP客户端工具还可以支持文件的多点下载以及断点续传技术，因此FTP服务得到了广大用户的青睐。</p>
+<p>FTP服务器是按照FTP协议在互联网上提供文件存储和访问服务的主机，FTP客户端则是向服务器发送连接请求，以建立数据传输链路的主机。FTP协议有下面两种工作模式。</p>
+<blockquote>
+<p><strong>主动模式</strong>：FTP服务器主动向客户端发起连接请求。</p>
+<p><strong>被动模式</strong>：FTP服务器等待客户端发起连接请求（FTP的默认工作模式）。</p>
+</blockquote>
+<p>vsftpd（very secure ftp daemon，非常安全的FTP守护进程）是一款运行在Linux操作系统上的FTP服务程序，不仅完全开源而且免费，此外，还具有很高的安全性、传输速度，以及支持虚拟用户验证等其他FTP服务程序不具备的特点。</p>
+<p>yum install vsftpd    安装vsftpd服务</p>
+<p>iptables防火墙管理工具默认禁止了FTP传输协议的端口号，因此在正式配置vsftpd服务程序之前，为了避免这些默认的防火墙策略“捣乱”，还需要清空iptables防火墙的默认策略，并把当前已经被清理的防火墙策略状态保存下来：</p>
+<pre><code class="language-shell">[root@linuxprobe ~]# iptables -F
+[root@linuxprobe ~]# service iptables save
+iptables: Saving firewall rules to /etc/sysconfig/iptables:[ OK ]
+</code></pre>
+<p>vsftpd服务程序常用的参数以及作用</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>listen=[YES|NO]</td>
+<td>是否以独立运行的方式监听服务</td>
+</tr>
+<tr>
+<td>listen_address=IP地址</td>
+<td>设置要监听的IP地址</td>
+</tr>
+<tr>
+<td>listen_port=21</td>
+<td>设置FTP服务的监听端口</td>
+</tr>
+<tr>
+<td>download_enable＝[YES|NO]</td>
+<td>是否允许下载文件</td>
+</tr>
+<tr>
+<td>userlist_enable=[YES|NO] userlist_deny=[YES|NO]</td>
+<td>设置用户列表为“允许”还是“禁止”操作</td>
+</tr>
+<tr>
+<td>max_clients=0</td>
+<td>最大客户端连接数，0为不限制</td>
+</tr>
+<tr>
+<td>max_per_ip=0</td>
+<td>同一IP地址的最大连接数，0为不限制</td>
+</tr>
+<tr>
+<td>anonymous_enable=[YES|NO]</td>
+<td>是否允许匿名用户访问</td>
+</tr>
+<tr>
+<td>anon_upload_enable=[YES|NO]</td>
+<td>是否允许匿名用户上传文件</td>
+</tr>
+<tr>
+<td>anon_umask=022</td>
+<td>匿名用户上传文件的umask值</td>
+</tr>
+<tr>
+<td>anon_root=/var/ftp</td>
+<td>匿名用户的FTP根目录</td>
+</tr>
+<tr>
+<td>anon_mkdir_write_enable=[YES|NO]</td>
+<td>是否允许匿名用户创建目录</td>
+</tr>
+<tr>
+<td>anon_other_write_enable=[YES|NO]</td>
+<td>是否开放匿名用户的其他写入权限（包括重命名、删除等操作权限）</td>
+</tr>
+<tr>
+<td>anon_max_rate=0</td>
+<td>匿名用户的最大传输速率（字节/秒），0为不限制</td>
+</tr>
+<tr>
+<td>local_enable=[YES|NO]</td>
+<td>是否允许本地用户登录FTP</td>
+</tr>
+<tr>
+<td>local_umask=022</td>
+<td>本地用户上传文件的umask值</td>
+</tr>
+<tr>
+<td>local_root=/var/ftp</td>
+<td>本地用户的FTP根目录</td>
+</tr>
+<tr>
+<td>chroot_local_user=[YES|NO]</td>
+<td>是否将用户权限禁锢在FTP目录，以确保安全</td>
+</tr>
+<tr>
+<td>local_max_rate=0</td>
+<td>本地用户最大传输速率（字节/秒），0为不限制</td>
+</tr>
+</tbody>
+</table>
+<h3 id="vsftpd服务程序">Vsftpd服务程序</h3>
+<p>vsftpd作为更加安全的文件传输的服务程序，允许用户以三种认证模式登录到FTP服务器上。</p>
+<p><strong>匿名开放模式</strong>：是一种最不安全的认证模式，任何人都可以无需密码验证而直接登录到FTP服务器。</p>
+<p><strong>本地用户模式</strong>：是通过Linux系统本地的账户密码信息进行认证的模式，相较于匿名开放模式更安全，而且配置起来也很简单。但是如果被黑客破解了账户的信息，就可以畅通无阻地登录FTP服务器，从而完全控制整台服务器。</p>
+<p><strong>虚拟用户模式</strong>：是这三种模式中最安全的一种认证模式，它需要为FTP服务单独建立用户数据库文件，虚拟出用来进行口令验证的账户信息，而这些账户信息在服务器系统中实际上是不存在的，仅供FTP服务程序进行认证使用。这样，即使黑客破解了账户信息也无法登录服务器，从而有效降低了破坏范围和影响。</p>
+<p>ftp是Linux系统中以命令行界面的方式来管理FTP传输服务的客户端工具。我们首先手动安装这个ftp客户端工具，以便在后续实验中查看结果。</p>
+<pre><code class="language-shell">[root@linuxprobe ~]# yum install ftp
+Loaded plugins: langpacks, product-id, subscription-manager
+………………省略部分输出信息………………
+Installing:
+ ftp x86_64 0.17-66.el7 rhel 61 k
+Transaction Summary
+================================================================================
+Install 1 Package
+Total download size: 61 k
+Installed size: 96 k
+Is this ok [y/d/N]: y
+Downloading packages:
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+ Installing : ftp-0.17-66.el7.x86_64 1/1 
+ Verifying : ftp-0.17-66.el7.x86_64 1/1
+Installed:
+ ftp.x86_64 0:0.17-66.el7
+Complete!
+</code></pre>
+<h3 id="匿名访问模式">匿名访问模式</h3>
+<p>在vsftpd服务程序中，匿名开放模式是最不安全的一种认证模式。任何人都可以无需密码验证而直接登录到FTP服务器。这种模式一般用来访问不重要的公开文件（在生产环境中尽量不要存放重要文件）。</p>
+<p>可以向匿名用户开放的权限参数以及作用</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>anonymous_enable=YES</td>
+<td>允许匿名访问模式</td>
+</tr>
+<tr>
+<td>anon_umask=022</td>
+<td>匿名用户上传文件的umask值</td>
+</tr>
+<tr>
+<td>anon_upload_enable=YES</td>
+<td>允许匿名用户上传文件</td>
+</tr>
+<tr>
+<td>anon_mkdir_write_enable=YES</td>
+<td>允许匿名用户创建目录</td>
+</tr>
+<tr>
+<td>anon_other_write_enable=YES</td>
+<td>允许匿名用户修改目录名称或删除目录</td>
+</tr>
+</tbody>
+</table>
+<h3 id="本地用户模式">本地用户模式</h3>
+<p>相较于匿名开放模式，本地用户模式要更安全，而且配置起来也很简单。</p>
+<p>本地用户模式使用的权限参数以及作用</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>anonymous_enable=NO</td>
+<td>禁止匿名访问模式</td>
+</tr>
+<tr>
+<td>local_enable=YES</td>
+<td>允许本地用户模式</td>
+</tr>
+<tr>
+<td>write_enable=YES</td>
+<td>设置可写权限</td>
+</tr>
+<tr>
+<td>local_umask=022</td>
+<td>本地用户模式创建文件的umask值</td>
+</tr>
+<tr>
+<td>userlist_deny=YES</td>
+<td>启用“禁止用户名单”，名单文件为ftpusers和user_list</td>
+</tr>
+<tr>
+<td>userlist_enable=YES</td>
+<td>开启用户作用名单文件功能</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-shell">[root@linuxprobe ~]# vim /etc/vsftpd/vsftpd.conf
+1 anonymous_enable=NO
+2 local_enable=YES
+3 write_enable=YES
+4 local_umask=022
+5 dirmessage_enable=YES
+6 xferlog_enable=YES
+7 connect_from_port_20=YES
+8 xferlog_std_format=YES
+9 listen=NO
+10 listen_ipv6=YES
+11 pam_service_name=vsftpd
+12 userlist_enable=YES
+13 tcp_wrappers=YES
+</code></pre>
+<h3 id="虚拟用户模式">虚拟用户模式</h3>
+<p>虚拟用户模式是这三种模式中最安全的一种认证模式，当然，因为安全性较之于前面两种模式有了提升，所以配置流程也会稍微复杂一些。</p>
+<p><strong>第1步</strong>：创建用于进行FTP认证的用户数据库文件，其中奇数行为账户名，偶数行为密码。例如，我们分别创建出zhangsan和lisi两个用户，密码均为redhat：</p>
+<pre><code class="language-shell">[root@linuxprobe ~]# cd /etc/vsftpd/
+[root@linuxprobe vsftpd]# vim vuser.list
+zhangsan
+redhat
+lisi
+redhat
+</code></pre>
+<p>但是，明文信息既不安全，也不符合让vsftpd服务程序直接加载的格式，因此需要使用db_load命令用哈希（hash）算法将原始的明文信息文件转换成数据库文件，并且降低数据库文件的权限（避免其他人看到数据库文件的内容），然后再把原始的明文信息文件删除。</p>
+<pre><code class="language-shell">[root@linuxprobe vsftpd]# db_load -T -t hash -f vuser.list vuser.db
+[root@linuxprobe vsftpd]# file vuser.db
+vuser.db: Berkeley DB (Hash, version 9, native byte-order)
+[root@linuxprobe vsftpd]# chmod 600 vuser.db
+[root@linuxprobe vsftpd]# rm -f vuser.list
+</code></pre>
+<p><strong>第2步</strong>：创建vsftpd服务程序用于存储文件的根目录以及虚拟用户映射的系统本地用户。FTP服务用于存储文件的根目录指的是，当虚拟用户登录后所访问的默认位置。</p>
+<p>由于Linux系统中的每一个文件都有所有者、所属组属性，例如使用虚拟账户“张三”新建了一个文件，但是系统中找不到账户“张三”，就会导致这个文件的权限出现错误。为此，需要再创建一个可以映射到虚拟用户的系统本地用户。简单来说，就是让虚拟用户默认登录到与之有映射关系的这个系统本地用户的家目录中，虚拟用户创建的文件的属性也都归属于这个系统本地用户，从而避免Linux系统无法处理虚拟用户所创建文件的属性权限。</p>
+<p>为了方便管理FTP服务器上的数据，可以把这个系统本地用户的家目录设置为/var目录（该目录用来存放经常发生改变的数据）。并且为了安全起见，我们将这个系统本地用户设置为不允许登录FTP服务器，这不会影响虚拟用户登录，而且还可以避免黑客通过这个系统本地用户进行登录。</p>
+<pre><code class="language-shell">[root@linuxprobe ~]# useradd -d /var/ftproot -s /sbin/nologin virtual
+[root@linuxprobe ~]# ls -ld /var/ftproot/
+drwx------. 3 virtual virtual 74 Jul 14 17:50 /var/ftproot/
+[root@linuxprobe ~]# chmod -Rf 755 /var/ftproot/
+</code></pre>
+<p><strong>第3步</strong>：建立用于支持虚拟用户的PAM文件。</p>
+<p>PAM（可插拔认证模块）是一种认证机制，通过一些动态链接库和统一的API把系统提供的服务与认证方式分开，使得系统管理员可以根据需求灵活调整服务程序的不同认证方式。要想把PAM功能和作用完全讲透，至少要一个章节的篇幅才可以（对该主题感兴趣的读者敬请关注本书的进阶篇，里面会详细讲解PAM）。</p>
+<p>通俗来讲，PAM是一组安全机制的模块，系统管理员可以用来轻易地调整服务程序的认证方式，而不必对应用程序进行任何修改。PAM采取了分层设计（应用程序层、应用接口层、鉴别模块层）的思想</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93d3cubGludXhwcm9iZS5jb20vd3AtY29udGVudC91cGxvYWRzLzIwMTUvMDcvUEFNJUU4JUFFJUE0JUU4JUFGJTgxJUU2JTlDJUJBJUU1JTg4JUI2JUU3JTlBJTg0JUU0JUJEJTkzJUU3JUIzJUJCJUU1JTlCJUJFLmpwZw?x-oss-process=image/format,png" alt=""></p>
+<p>新建一个用于虚拟用户认证的PAM文件vsftpd.vu，其中PAM文件内的“db=”参数为使用db_load命令生成的账户密码数据库文件的路径，但不用写数据库文件的后缀：</p>
+<pre><code class="language-shell">[root@linuxprobe ~]# vim /etc/pam.d/vsftpd.vu
+auth       required     pam_userdb.so db=/etc/vsftpd/vuser
+account    required     pam_userdb.so db=/etc/vsftpd/vuser
+</code></pre>
+<p><strong>第4步</strong>：在vsftpd服务程序的主配置文件中通过pam_service_name参数将PAM认证文件的名称修改为vsftpd.vu，PAM作为应用程序层与鉴别模块层的连接纽带，可以让应用程序根据需求灵活地在自身插入所需的鉴别功能模块。当应用程序需要PAM认证时，则需要在应用程序中定义负责认证的PAM配置文件，实现所需的认证功能。</p>
+<p>利用PAM文件进行认证时使用的参数以及作用</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>anonymous_enable=NO</td>
+<td>禁止匿名开放模式</td>
+</tr>
+<tr>
+<td>local_enable=YES</td>
+<td>允许本地用户模式</td>
+</tr>
+<tr>
+<td>guest_enable=YES</td>
+<td>开启虚拟用户模式</td>
+</tr>
+<tr>
+<td>guest_username=virtual</td>
+<td>指定虚拟用户账户</td>
+</tr>
+<tr>
+<td>pam_service_name=vsftpd.vu</td>
+<td>指定PAM文件</td>
+</tr>
+<tr>
+<td>allow_writeable_chroot=YES</td>
+<td>允许对禁锢的FTP根目录执行写入操作，而且不拒绝用户的登录请求</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-shell">[root@linuxprobe ~]# vim /etc/vsftpd/vsftpd.conf
+1 anonymous_enable=NO
+2 local_enable=YES
+3 guest_enable=YES
+4 guest_username=virtual
+5 allow_writeable_chroot=YES
+6 write_enable=YES
+7 local_umask=022
+8 dirmessage_enable=YES
+9 xferlog_enable=YES
+10 connect_from_port_20=YES
+11 xferlog_std_format=YES
+12 listen=NO
+13 listen_ipv6=YES
+14 pam_service_name=vsftpd.vu
+15 userlist_enable=YES
+16 tcp_wrappers=YES
+</code></pre>
+<p><strong>第5步</strong>：为虚拟用户设置不同的权限。虽然账户zhangsan和lisi都是用于vsftpd服务程序认证的虚拟账户，但是我们依然想对这两人进行区别对待。比如，允许张三上传、创建、修改、查看、删除文件，只允许李四查看文件。这可以通过vsftpd服务程序来实现。只需新建一个目录，在里面分别创建两个以zhangsan和lisi命名的文件，其中在名为zhangsan的文件中写入允许的相关权限（使用匿名用户的参数）：</p>
+<pre><code class="language-shell">[root@linuxprobe ~]# mkdir /etc/vsftpd/vusers_dir/[root@linuxprobe ~]# cd /etc/vsftpd/vusers_dir/[root@linuxprobe vusers_dir]# touch lisi[root@linuxprobe vusers_dir]# vim zhangsananon_upload_enable=YESanon_mkdir_write_enable=YESanon_other_write_enable=YES
+</code></pre>
+<p>然后再次修改vsftpd主配置文件，通过添加user_config_dir参数来定义这两个虚拟用户不同权限的配置文件所存放的路径。为了让修改后的参数立即生效，需要重启vsftpd服务程序并将该服务添加到开机启动项中：</p>
+<pre><code class="language-shell">[root@linuxprobe ~]# vim /etc/vsftpd/vsftpd.confanonymous_enable=NOlocal_enable=YESguest_enable=YESguest_username=virtualallow_writeable_chroot=YESwrite_enable=YESlocal_umask=022dirmessage_enable=YESxferlog_enable=YESconnect_from_port_20=YESxferlog_std_format=YESlisten=NOlisten_ipv6=YESpam_service_name=vsftpd.vuuserlist_enable=YEStcp_wrappers=YESuser_config_dir=/etc/vsftpd/vusers_dir[root@linuxprobe ~]# systemctl restart vsftpd[root@linuxprobe ~]# systemctl enable vsftpd ln -s '/usr/lib/systemd/system/vsftpd.service' '/etc/systemd/system/multi-user.target.wants/vsftpd.service
+</code></pre>
+<p><strong>第6步</strong>：设置SELinux域允许策略，然后使用虚拟用户模式登录FTP服务器。相信大家可以猜到，SELinux会继续来捣乱。所以，先按照前面实验中的步骤开启SELinux域的允许策略，以免再次出现操作失败的情况：</p>
+<pre><code class="language-shell">[root@linuxprobe ~]# getsebool -a | grep ftpftp_home_dir –&gt; offftpd_anon_write –&gt; offftpd_connect_all_unreserved –&gt; offftpd_connect_db –&gt; offftpd_full_access –&gt; offftpd_use_cifs –&gt; offftpd_use_fusefs –&gt; offftpd_use_nfs –&gt; offftpd_use_passive_mode –&gt; offhttpd_can_connect_ftp –&gt; offhttpd_enable_ftp_server –&gt; offsftpd_anon_write –&gt; offsftpd_enable_homedirs –&gt; offsftpd_full_access –&gt; offsftpd_write_ssh_home –&gt; offtftp_anon_write –&gt; offtftp_home_dir –&gt; off[root@linuxprobe ~]# setsebool -P ftpd_full_access=on
+</code></pre>
+<p>此时，不但可以使用虚拟用户模式成功登录到FTP服务器，还可以分别使用账户zhangsan和lisi来检验他们的权限。当然，读者在生产环境中一定要根据真实需求来灵活配置参数，不要照搬这里的实验操作。</p>
+<pre><code class="language-shell">[root@linuxprobe ~]# ftp 192.168.10.10Connected to 192.168.10.10 (192.168.10.10).220 (vsFTPd 3.0.2)Name (192.168.10.10:root): lisi331 Please specify the password.Password:此处输入虚拟用户的密码230 Login successful.Remote system type is UNIX.Using binary mode to transfer files.ftp&gt; mkdir files550 Permission denied.ftp&gt; exit221 Goodbye.[root@linuxprobe ~]# ftp 192.168.10.10Connected to 192.168.10.10 (192.168.10.10).220 (vsFTPd 3.0.2)Name (192.168.10.10:root): zhangsan331 Please specify the password.Password:此处输入虚拟用户的密码230 Login successful.Remote system type is UNIX.Using binary mode to transfer files.ftp&gt; mkdir files257 &quot;/files&quot; createdftp&gt; rename files database350 Ready for RNTO.250 Rename successful.ftp&gt; rmdir database250 Remove directory operation successful.ftp&gt; exit221 Goodbye.
+</code></pre>
+<p><img src="https://img-blog.csdnimg.cn/20200607133241982.png" alt=""></p>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接: </strong>
+      <a href="https://www.jaydonsun.com/2020/05/linuxnote-13/" title="Linux学习笔记-13" target="_blank" rel="external">https://www.jaydonsun.com/2020/05/linuxnote-13/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN</a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/jaydonsun" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://www.jaydonsun.com/avatar.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/jaydonsun" target="_blank"><span class="text-dark">Jaydon</span><small class="ml-1x">Just do it !</small></a></h3>
+        <div>Good Good Study, Day Day Up~</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+<section id="comments">
+    <div id="vcomments"></div>
+</section>
+
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://www.jaydonsun.com/2020/05/linuxnote-12/" title="Linux学习笔记-12"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;下一篇</span></a>
+            </li>
+            <li class="next">
+                <a href="https://www.jaydonsun.com/2020/05/linuxnote-14/"
+                    title="Linux学习笔记-14"><span>上一篇&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="文章目录" role="button">
+                    <span>[&nbsp;</span><span>文章目录</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/jaydonsun" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://www.jaydonsun.com/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2014  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://www.jaydonsun.com/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://www.jaydonsun.com/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(未命名)',
+            },
+            ROOT_URL: 'https:\/\/www.jaydonsun.com',
+            CONTENT_URL: 'https:\/\/www.jaydonsun.com\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://www.jaydonsun.com/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine"></script>
+<script type="text/javascript">
+    var GUEST = ['nick', 'mail', 'link'];
+    var meta = 'nick,mail';
+    meta = meta.split(',').filter(function (item) {
+        return GUEST.indexOf(item) > -1;
+    });
+    new Valine({
+        el: '#vcomments',
+        verify: true ,
+        notify: true ,
+        appId: 'V23xBss1BLY3Vue4w4MTnKbM-gzGzoHsz',
+        appKey: 'zD0uQrt4260z4n26rd767o7d',
+        placeholder: '说两句吧~',
+        avatar: 'mm',
+        meta: meta,
+        pageSize: '10' || 10,
+        visitor: false 
+});
+</script>
+
+  </body>
+</html>

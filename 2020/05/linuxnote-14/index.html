@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <title>
+        Linux学习笔记-14 - Jaydon&#39;s Blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="使用Samba或NFS实现文件共享 Samba文件共享服务 yum install samba 安装samba /etc/samba/smb.conf 主配置文件 由于在Samba服务程序的主配置文件中，注释信息行实" />
+    <meta name="generator" content="Hugo 0.85.0 with theme pure" />
+    <title>Linux学习笔记-14 - Jaydon&#39;s Blog</title>
+    
+    
+    <link rel="stylesheet" href="https://www.jaydonsun.com/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="Linux学习笔记-14" />
+<meta property="og:description" content="使用Samba或NFS实现文件共享 Samba文件共享服务 yum install samba 安装samba /etc/samba/smb.conf 主配置文件 由于在Samba服务程序的主配置文件中，注释信息行实" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.jaydonsun.com/2020/05/linuxnote-14/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-05-30T23:04:16+00:00" />
+<meta property="article:modified_time" content="2020-05-30T23:04:16+00:00" />
+
+<meta itemprop="name" content="Linux学习笔记-14">
+<meta itemprop="description" content="使用Samba或NFS实现文件共享 Samba文件共享服务 yum install samba 安装samba /etc/samba/smb.conf 主配置文件 由于在Samba服务程序的主配置文件中，注释信息行实"><meta itemprop="datePublished" content="2020-05-30T23:04:16+00:00" />
+<meta itemprop="dateModified" content="2020-05-30T23:04:16+00:00" />
+<meta itemprop="wordCount" content="4758">
+<meta itemprop="keywords" content="linux," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Linux学习笔记-14"/>
+<meta name="twitter:description" content="使用Samba或NFS实现文件共享 Samba文件共享服务 yum install samba 安装samba /etc/samba/smb.conf 主配置文件 由于在Samba服务程序的主配置文件中，注释信息行实"/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/jaydonsun" target="_blank">
+            <img class="img-circle img-rotate" src="https://www.jaydonsun.com/avatar.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Jaydon</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Just do it !</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Beijing, China</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="想要查找什么..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">首页</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">归档</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">分类</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">标签</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">关于</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content"><p>Welcome to my blog~</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> 标签</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://www.jaydonsun.com/tags/cloudreve/" class="tag-list-link" rel="1">cloudreve<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/docker/" class="tag-list-link" rel="1">docker<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/linux/" class="tag-list-link" rel="18">linux<span
+               class="tag-list-count">18</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/lnmp/" class="tag-list-link" rel="2">lnmp<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/nginx/" class="tag-list-link" rel="1">nginx<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/wiznote/" class="tag-list-link" rel="1">wiznote<span
+               class="tag-list-count">1</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> 分类</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://www.jaydonsun.com/categories/cloudreve/" class="category-list-link">cloudreve</a><span class="category-list-count">1</span></li>
+            <li class="category-list-item"><a href="https://www.jaydonsun.com/categories/linux/" class="category-list-link">linux</a><span class="category-list-count">18</span></li>
+            <li class="category-list-item"><a href="https://www.jaydonsun.com/categories/lnmp/" class="category-list-link">lnmp</a><span class="category-list-count">1</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> 标签</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/cloudreve/" class="tag-list-link">cloudreve</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/docker/" class="tag-list-link">docker</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/linux/" class="tag-list-link">linux</a><span
+                    class="tag-list-count">18</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/lnmp/" class="tag-list-link">lnmp</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/nginx/" class="tag-list-link">nginx</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/wiznote/" class="tag-list-link">wiznote</a><span
+                    class="tag-list-count">1</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+<div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/docker-dockercompose-install/" class="title">Docker Dockercompose Install</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 16:45:14 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/wiznote-install/" class="title">Wiznote docker部署</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 15:38:39 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/cloudreve-service/" class="title">Cloudreve Service配置</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 12:13:40 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/lnmp-install-yum/" class="title">LNMP yum安装</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 12:00:46 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/centos7-docker-install/" class="title">Centos7安装Docker</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 11:03:26 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">文章目录</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2020/05/linuxnote-14/"
+    >Linux学习笔记-14</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://www.jaydonsun.com/2020/05/linuxnote-14/" class="article-date">
+  <time datetime="2020-05-30 23:04:16 &#43;0000 UTC" itemprop="datePublished">2020-05-30</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/linux/"> linux </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/linux/"> linux </a>
+  </span>
+
+        <span class="post-comment"><i class="icon icon-comment"></i>&nbsp;<a href="/2020/05/linuxnote-14/#comments"
+            class="article-comment-link">评论</a></span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 4758字</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 10分 </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <h1 id="使用samba或nfs实现文件共享">使用Samba或NFS实现文件共享</h1>
+<h2 id="samba文件共享服务">Samba文件共享服务</h2>
+<p>yum install samba   安装samba</p>
+<p>/etc/samba/smb.conf  主配置文件</p>
+<p>由于在Samba服务程序的主配置文件中，注释信息行实在太多，不便于分析里面的重要参数，因此先把主配置文件改个名字，然后使用cat命令读入主配置文件，再在grep命令后面添加-v参数（反向选择），分别去掉所有以井号（#）和分号（;）开头的注释信息行，对于剩余的空白行可以使用^$参数来表示并进行反选过滤，最后把过滤后的可用参数信息通过重定向符覆盖写入到原始文件名称中。</p>
+<pre><code class="language-shell">[root@linuxprobe ~]# mv /etc/samba/smb.conf /etc/samba/smb.conf.bak
+[root@linuxprobe ~]# cat /etc/samba/smb.conf.bak | grep -v &quot;#&quot; | grep -v &quot;;&quot; | grep -v &quot;^$&quot; &gt; /etc/samba/smb.conf
+[root@linuxprobe ~]# cat /etc/samba/smb.conf
+</code></pre>
+<p>Samba服务程序中的参数以及作用</p>
+<table>
+<thead>
+<tr>
+<th>[global]</th>
+<th></th>
+<th>#全局参数。</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>workgroup = MYGROUP</td>
+<td>#工作组名称</td>
+</tr>
+<tr>
+<td></td>
+<td>server string = Samba Server Version %v</td>
+<td>#服务器介绍信息，参数%v为显示SMB版本号</td>
+</tr>
+<tr>
+<td></td>
+<td>log file = /var/log/samba/log.%m</td>
+<td>#定义日志文件的存放位置与名称，参数%m为来访的主机名</td>
+</tr>
+<tr>
+<td></td>
+<td>max log size = 50</td>
+<td>#定义日志文件的最大容量为50KB</td>
+</tr>
+<tr>
+<td></td>
+<td>security = user</td>
+<td>#安全验证的方式，总共有4种</td>
+</tr>
+<tr>
+<td></td>
+<td>#share：来访主机无需验证口令；比较方便，但安全性很差</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>#user：需验证来访主机提供的口令后才可以访问；提升了安全性</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>#server：使用独立的远程主机验证来访主机提供的口令（集中管理账户）</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>#domain：使用域控制器进行身份验证</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>passdb backend = tdbsam</td>
+<td>#定义用户后台的类型，共有3种</td>
+</tr>
+<tr>
+<td></td>
+<td>#smbpasswd：使用smbpasswd命令为系统用户设置Samba服务程序的密码</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>#tdbsam：创建数据库文件并使用pdbedit命令建立Samba服务程序的用户</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>#ldapsam：基于LDAP服务进行账户验证</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>load printers = yes</td>
+<td>#设置在Samba服务启动时是否共享打印机设备</td>
+</tr>
+<tr>
+<td></td>
+<td>cups options = raw</td>
+<td>#打印机的选项</td>
+</tr>
+<tr>
+<td>[homes]</td>
+<td></td>
+<td>#共享参数</td>
+</tr>
+<tr>
+<td></td>
+<td>comment = Home Directories</td>
+<td>#描述信息</td>
+</tr>
+<tr>
+<td></td>
+<td>browseable = no</td>
+<td>#指定共享信息是否在“网上邻居”中可见</td>
+</tr>
+<tr>
+<td></td>
+<td>writable = yes</td>
+<td>#定义是否可以执行写入操作，与“read only”相反</td>
+</tr>
+<tr>
+<td>[printers]</td>
+<td></td>
+<td>#打印机共享参数</td>
+</tr>
+<tr>
+<td></td>
+<td>comment = All Printers</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>path = /var/spool/samba</td>
+<td>#共享文件的实际路径(重要)。</td>
+</tr>
+<tr>
+<td></td>
+<td>browseable = no</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>guest ok = no</td>
+<td>#是否所有人可见，等同于&quot;public&quot;参数。</td>
+</tr>
+<tr>
+<td></td>
+<td>writable = no</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>printable = yes</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="配置共享资源">配置共享资源</h3>
+<p>Samba服务程序的主配置文件与前面学习过的Apache服务很相似，包括全局配置参数和区域配置参数。全局配置参数用于设置整体的资源共享环境，对里面的每一个独立的共享资源都有效。区域配置参数则用于设置单独的共享资源，且仅对该资源有效。创建共享资源的方法很简单，只要将表12-2中的参数写入到Samba服务程序的主配置文件中，然后重启该服务即可。</p>
+<p>用于设置Samba服务程序的参数以及作用</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[database]</td>
+<td>共享名称为database</td>
+</tr>
+<tr>
+<td>comment = Do not arbitrarily modify the database file</td>
+<td>警告用户不要随意修改数据库</td>
+</tr>
+<tr>
+<td>path = /home/database</td>
+<td>共享目录为/home/database</td>
+</tr>
+<tr>
+<td>public = no</td>
+<td>关闭“所有人可见”</td>
+</tr>
+<tr>
+<td>writable = yes</td>
+<td>允许写入操作</td>
+</tr>
+</tbody>
+</table>
+<h3 id="linux挂载共享">Linux挂载共享</h3>
+<p>上面的实验操作可能会让各位读者误以为Samba服务程序只是为了解决Linux系统和Windows系统的资源共享问题而设计的。其实，Samba服务程序还可以实现Linux系统之间的文件共享。请各位读者按照表12-5来设置Samba服务程序所在主机（即Samba共享服务器）和Linux客户端使用的IP地址，然后在客户端安装支持文件共享服务的软件包（cifs-utils）。</p>
+<p>Samba共享服务器和Linux客户端各自使用的操作系统以及IP地址</p>
+<table>
+<thead>
+<tr>
+<th>主机名称</th>
+<th>操作系统</th>
+<th>IP地址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Samba共享服务器</td>
+<td>RHEL 7</td>
+<td>192.168.10.10</td>
+</tr>
+<tr>
+<td>Linux客户端</td>
+<td>RHEL 7</td>
+<td>192.168.10.20</td>
+</tr>
+<tr>
+<td>Windows客户端</td>
+<td>Windows 7</td>
+<td>192.168.10.30</td>
+</tr>
+</tbody>
+</table>
+<h2 id="nfs网络文件系统">NFS网络文件系统</h2>
+<p>NFS（网络文件系统）服务可以将远程Linux系统上的文件共享资源挂载到本地主机的目录上，从而使得本地主机（Linux客户端）基于TCP/IP协议，像使用本地主机上的资源那样读写远程Linux系统上的共享文件。</p>
+<p>yum install nfs-utils  安装nfs</p>
+<p><strong>第1步</strong>：为了检验NFS服务配置的效果，我们需要使用两台Linux主机（一台充当NFS服务器，一台充当NFS客户端），并设置它们所使用的IP地址。</p>
+<p>两台Linux主机所使用的操作系统以及IP地址</p>
+<table>
+<thead>
+<tr>
+<th>主机名称</th>
+<th>操作系统</th>
+<th>IP地址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NFS服务端</td>
+<td>RHEL 7</td>
+<td>192.168.10.10</td>
+</tr>
+<tr>
+<td>NFS客户端</td>
+<td>RHEL 7</td>
+<td>192.168.10.20</td>
+</tr>
+</tbody>
+</table>
+<p>另外，不要忘记清空NFS服务器上面iptables防火墙的默认策略，以免默认的防火墙策略禁止正常的NFS共享服务。</p>
+<pre><code class="language-shell">[root@linuxprobe ~]# iptables -F
+[root@linuxprobe ~]# service iptables save
+iptables: Saving firewall rules to /etc/sysconfig/iptables:[ OK ]
+</code></pre>
+<p><strong>第2步</strong>：在NFS服务器上建立用于NFS文件共享的目录，并设置足够的权限确保其他人也有写入权限。</p>
+<pre><code class="language-shell">[root@linuxprobe ~]# mkdir /nfsfile
+[root@linuxprobe ~]# chmod -Rf 777 /nfsfile
+[root@linuxprobe ~]# echo &quot;welcome to linuxprobe.com&quot; &gt; /nfsfile/readme
+</code></pre>
+<p><strong>第3步</strong>：NFS服务程序的配置文件为/etc/exports，默认情况下里面没有任何内容。我们可以按照“共享目录的路径 允许访问的NFS客户端（共享权限参数）”的格式，定义要共享的目录与相应的权限。</p>
+<p>例如，如果想要把/nfsfile目录共享给192.168.10.0/24网段内的所有主机，让这些主机都拥有读写权限，在将数据写入到NFS服务器的硬盘中后才会结束操作，最大限度保证数据不丢失，以及把来访客户端root管理员映射为本地的匿名用户等，则可以按照下面命令中的格式，将下面的参数写到NFS服务程序的配置文件中。</p>
+<p>用于配置NFS服务程序配置文件的参数</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ro</td>
+<td>只读</td>
+</tr>
+<tr>
+<td>rw</td>
+<td>读写</td>
+</tr>
+<tr>
+<td>root_squash</td>
+<td>当NFS客户端以root管理员访问时，映射为NFS服务器的匿名用户</td>
+</tr>
+<tr>
+<td>no_root_squash</td>
+<td>当NFS客户端以root管理员访问时，映射为NFS服务器的root管理员</td>
+</tr>
+<tr>
+<td>all_squash</td>
+<td>无论NFS客户端使用什么账户访问，均映射为NFS服务器的匿名用户</td>
+</tr>
+<tr>
+<td>sync</td>
+<td>同时将数据写入到内存与硬盘中，保证不丢失数据</td>
+</tr>
+<tr>
+<td>async</td>
+<td>优先将数据保存到内存，然后再写入硬盘；这样效率更高，但可能会丢失数据</td>
+</tr>
+</tbody>
+</table>
+<p>NFS客户端地址与权限之间没有空格</p>
+<pre><code class="language-shell">[root@linuxprobe ~]# vim /etc/exports
+/nfsfile 192.168.10.*(rw,sync,root_squash)
+</code></pre>
+<p><strong>第4步</strong>：启动和启用NFS服务程序。由于在使用NFS服务进行文件共享之前，需要使用RPC（Remote Procedure Call，远程过程调用）服务将NFS服务器的IP地址和端口号等信息发送给客户端。因此，在启动NFS服务之前，还需要顺带重启并启用rpcbind服务程序，并将这两个服务一并加入开机启动项中。</p>
+<pre><code class="language-shell">[root@linuxprobe ~]# systemctl restart rpcbind
+[root@linuxprobe ~]# systemctl enable rpcbind
+[root@linuxprobe ~]# systemctl start nfs-server
+[root@linuxprobe ~]# systemctl enable nfs-server
+ln -s '/usr/lib/systemd/system/nfs-server.service' '/etc/systemd/system/nfs.target.wants/nfs-server.service'
+</code></pre>
+<p>NFS客户端的配置步骤也十分简单。先使用showmount命令（以及必要的参数，见表12-8）查询NFS服务器的远程共享信息，其输出格式为“共享的目录名称 允许使用客户端地址”。</p>
+<p>showmount命令中可用的参数以及作用</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-e</td>
+<td>显示NFS服务器的共享列表</td>
+</tr>
+<tr>
+<td>-a</td>
+<td>显示本机挂载的文件资源的情况NFS资源的情况</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>显示版本号</td>
+</tr>
+</tbody>
+</table>
+<h2 id="autofs自动挂载服务">AutoFs自动挂载服务</h2>
+<p>无论是Samba服务还是NFS服务，都要把挂载信息写入到/etc/fstab中，这样远程共享资源就会自动随服务器开机而进行挂载。虽然这很方便，但是如果挂载的远程资源太多，则会给网络带宽和服务器的硬件资源带来很大负载。如果在资源挂载后长期不使用，也会造成服务器硬件资源的浪费。可能会有读者说，“可以在每次使用之前执行mount命令进行手动挂载”。这是一个不错的选择，但是每次都需要先挂载再使用，您不觉得麻烦吗？</p>
+<p>autofs自动挂载服务可以帮我们解决这一问题。与mount命令不同，autofs服务程序是一种Linux系统守护进程，当检测到用户试图访问一个尚未挂载的文件系统时，将自动挂载该文件系统。换句话说，我们将挂载信息填入/etc/fstab文件后，系统在每次开机时都自动将其挂载，而autofs服务程序则是在用户需要使用该文件系统时才去动态挂载，从而节约了网络资源和服务器的硬件资源。</p>
+<p>yum install autofs  安装autofs服务</p>
+<h1 id="使用bind提供域名解析服务">使用Bind提供域名解析服务</h1>
+<h2 id="dns域名解析服务">DNS域名解析服务</h2>
+<p>相较于由数字构成的IP地址，域名更容易被理解和记忆，所以我们通常更习惯通过域名的方式来访问网络中的资源。但是，网络中的计算机之间只能基于IP地址来相互识别对方的身份，而且要想在互联网中传输数据，也必须基于外网的IP地址来完成。</p>
+<p>为了降低用户访问网络资源的门槛，DNS（Domain Name System，域名系统）技术应运而生。这是一项用于管理和解析域名与IP地址对应关系的技术，简单来说，就是能够接受用户输入的域名或IP地址，然后自动查找与之匹配（或者说具有映射关系）的IP地址或域名，即将域名解析为IP地址（正向解析），或将IP地址解析为域名（反向解析）。这样一来，我们只需要在浏览器中输入域名就能打开想要访问的网站了。DNS域名解析技术的正向解析也是我们最常使用的一种工作模式。</p>
+<p>当今世界的信息化程度越来越高，大数据、云计算、物联网、人工智能等新技术不断涌现，全球网民的数量据说也超过了35亿，而且每年还在以10%的速度迅速增长。这些因素导致互联网中的域名数量进一步激增，被访问的频率也进一步加大。假设全球网民每人每天只访问一个网站域名，而且只访问一次，也会产生35亿次的查询请求，如此庞大的请求数量肯定无法被某一台服务器全部处理掉。DNS技术作为互联网基础设施中重要的一环，为了为网民提供不间断、稳定且快速的域名查询服务，保证互联网的正常运转，提供了下面三种类型的服务器。</p>
+<blockquote>
+<p><strong>主服务器</strong>：在特定区域内具有唯一性，负责维护该区域内的域名与IP地址之间的对应关系。</p>
+<p><strong>从服务器</strong>：从主服务器中获得域名与IP地址的对应关系并进行维护，以防主服务器宕机等情况。</p>
+<p><strong>缓存服务器</strong>：通过向其他域名解析服务器查询获得域名与IP地址的对应关系，并将经常查询的域名信息保存到服务器本地，以此来提高重复查询时的效率。</p>
+</blockquote>
+<p>13台根DNS服务器的具体信息</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>管理单位</th>
+<th>地理位置</th>
+<th>IP地址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>INTERNIC.NET</td>
+<td>美国-弗吉尼亚州</td>
+<td>198.41.0.4</td>
+</tr>
+<tr>
+<td>B</td>
+<td>美国信息科学研究所</td>
+<td>美国-加利弗尼亚州</td>
+<td>128.9.0.107</td>
+</tr>
+<tr>
+<td>C</td>
+<td>PSINet公司</td>
+<td>美国-弗吉尼亚州</td>
+<td>192.33.4.12</td>
+</tr>
+<tr>
+<td>D</td>
+<td>马里兰大学</td>
+<td>美国-马里兰州</td>
+<td>128.8.10.90</td>
+</tr>
+<tr>
+<td>E</td>
+<td>美国航空航天管理局</td>
+<td>美国加利弗尼亚州</td>
+<td>192.203.230.10</td>
+</tr>
+<tr>
+<td>F</td>
+<td>因特网软件联盟</td>
+<td>美国加利弗尼亚州</td>
+<td>192.5.5.241</td>
+</tr>
+<tr>
+<td>G</td>
+<td>美国国防部网络信息中心</td>
+<td>美国弗吉尼亚州</td>
+<td>192.112.36.4</td>
+</tr>
+<tr>
+<td>H</td>
+<td>美国陆军研究所</td>
+<td>美国-马里兰州</td>
+<td>128.63.2.53</td>
+</tr>
+<tr>
+<td>I</td>
+<td>Autonomica公司</td>
+<td>瑞典-斯德哥尔摩</td>
+<td>192.36.148.17</td>
+</tr>
+<tr>
+<td>J</td>
+<td>VeriSign公司</td>
+<td>美国-弗吉尼亚州</td>
+<td>192.58.128.30</td>
+</tr>
+<tr>
+<td>K</td>
+<td>RIPE NCC</td>
+<td>英国-伦敦</td>
+<td>193.0.14.129</td>
+</tr>
+<tr>
+<td>L</td>
+<td>IANA</td>
+<td>美国-弗吉尼亚州</td>
+<td>199.7.83.42</td>
+</tr>
+<tr>
+<td>M</td>
+<td>WIDE Project</td>
+<td>日本-东京</td>
+<td>202.12.27.33</td>
+</tr>
+</tbody>
+</table>
+<h3 id="安装bind服务程序">安装Bind服务程序</h3>
+<p>yum install bind-chroot</p>
+<p>bind服务程序的配置并不简单，因为要想为用户提供健全的DNS查询服务，要在本地保存相关的域名数据库，而如果把所有域名和IP地址的对应关系都写入到某个配置文件中，估计要有上千万条的参数，这样既不利于程序的执行效率，也不方便日后的修改和维护。因此在bind服务程序中有下面这三个比较关键的文件。</p>
+<blockquote>
+<p>主配置文件（/etc/named.conf）：只有58行，而且在去除注释信息和空行之后，实际有效的参数仅有30行左右，这些参数用来定义bind服务程序的运行。</p>
+<p>区域配置文件（/etc/named.rfc1912.zones）：用来保存域名和IP地址对应关系的所在位置。类似于图书的目录，对应着每个域和相应IP地址所在的具体位置，当需要查看或修改时，可根据这个位置找到相关文件。</p>
+<p>数据配置文件目录（/var/named）：该目录用来保存域名和IP地址真实对应关系的数据配置文件。</p>
+</blockquote>
+<p>在Linux系统中，bind服务程序的名称为named。首先需要在/etc目录中找到该服务程序的主配置文件，然后把第11行和第17行的地址均修改为any，分别表示服务器上的所有IP地址均可提供DNS域名解析服务，以及允许所有人对本服务器发送DNS查询请求。这两个地方一定要修改准确。</p>
+<pre><code class="language-shell"> [root@linuxprobe ~]# vim /etc/named.conf
+ 1 //
+ 2 // named.conf
+ 3 //
+ 4 // Provided by Red Hat bind package to configure the ISC BIND named(8) DNS
+ 5 // server as a caching only nameserver (as a localhost DNS resolver only).
+ 6 //
+ 7 // See /usr/share/doc/bind*/sample/ for example named configuration files.
+ 8 //
+ 9 
+ 10 options {
+ 11 listen-on port 53 { any; };
+ 12 listen-on-v6 port 53 { ::1; };
+ 13 directory &quot;/var/named&quot;;
+ 14 dump-file &quot;/var/named/data/cache_dump.db&quot;;
+ 15 statistics-file &quot;/var/named/data/named_stats.txt&quot;;
+ 16 memstatistics-file &quot;/var/named/data/named_mem_stats.txt&quot;;
+ 17 allow-query { any; };
+ 18 
+ 19 /* 
+ 20 - If you are building an AUTHORITATIVE DNS server, do NOT enable re cursion.
+ 1,1 Top
+ 21 - If you are building a RECURSIVE (caching) DNS server, you need to enable 
+ 22 recursion. 
+ 23 - If your recursive DNS server has a public IP address, you MUST en able access 
+ 24 control to limit queries to your legitimate users. Failing to do so will
+ 25 cause your server to become part of large scale DNS amplification 
+ 26 attacks. Implementing BCP38 within your network would greatly
+ 27 reduce such attack surface 
+ 28 */
+ 29 recursion yes;
+ 30 
+ 31 dnssec-enable yes;
+ 32 dnssec-validation yes;
+ 33 dnssec-lookaside auto;
+ 34 
+ 35 /* Path to ISC DLV key */
+ 36 bindkeys-file &quot;/etc/named.iscdlv.key&quot;;
+ 37 
+ 38 managed-keys-directory &quot;/var/named/dynamic&quot;;
+ 39 
+ 40 pid-file &quot;/run/named/named.pid&quot;;
+ 41 session-keyfile &quot;/run/named/session.key&quot;;
+ 42 };
+ 43 
+ 44 logging {
+ 45 channel default_debug {
+ 46 file &quot;data/named.run&quot;;
+ 47 severity dynamic;
+ 48 };
+ 49 };
+ 50 
+ 51 zone &quot;.&quot; IN {
+ 52 type hint;
+ 53 file &quot;named.ca&quot;;
+ 54 };
+ 55 
+ 56 include &quot;/etc/named.rfc1912.zones&quot;;
+ 57 include &quot;/etc/named.root.key&quot;;
+ 58 
+</code></pre>
+<p><img src="https://img-blog.csdnimg.cn/20200607133320820.png" alt=""></p>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接: </strong>
+      <a href="https://www.jaydonsun.com/2020/05/linuxnote-14/" title="Linux学习笔记-14" target="_blank" rel="external">https://www.jaydonsun.com/2020/05/linuxnote-14/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN</a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/jaydonsun" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://www.jaydonsun.com/avatar.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/jaydonsun" target="_blank"><span class="text-dark">Jaydon</span><small class="ml-1x">Just do it !</small></a></h3>
+        <div>Good Good Study, Day Day Up~</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+<section id="comments">
+    <div id="vcomments"></div>
+</section>
+
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://www.jaydonsun.com/2020/05/linuxnote-13/" title="Linux学习笔记-13"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;下一篇</span></a>
+            </li>
+            <li class="next">
+                <a href="https://www.jaydonsun.com/2020/05/linuxnote-15/"
+                    title="Linux学习笔记-15"><span>上一篇&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="文章目录" role="button">
+                    <span>[&nbsp;</span><span>文章目录</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/jaydonsun" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://www.jaydonsun.com/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2014  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://www.jaydonsun.com/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://www.jaydonsun.com/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(未命名)',
+            },
+            ROOT_URL: 'https:\/\/www.jaydonsun.com',
+            CONTENT_URL: 'https:\/\/www.jaydonsun.com\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://www.jaydonsun.com/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine"></script>
+<script type="text/javascript">
+    var GUEST = ['nick', 'mail', 'link'];
+    var meta = 'nick,mail';
+    meta = meta.split(',').filter(function (item) {
+        return GUEST.indexOf(item) > -1;
+    });
+    new Valine({
+        el: '#vcomments',
+        verify: true ,
+        notify: true ,
+        appId: 'V23xBss1BLY3Vue4w4MTnKbM-gzGzoHsz',
+        appKey: 'zD0uQrt4260z4n26rd767o7d',
+        placeholder: '说两句吧~',
+        avatar: 'mm',
+        meta: meta,
+        pageSize: '10' || 10,
+        visitor: false 
+});
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <title>
+        Linux学习笔记-10 - Jaydon&#39;s Blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="iptables与firewalld防火墙 配置网卡的4种方法 1.修改配置文件 ​ /etc/sysconfig/network-scripts/" />
+    <meta name="generator" content="Hugo 0.85.0 with theme pure" />
+    <title>Linux学习笔记-10 - Jaydon&#39;s Blog</title>
+    
+    
+    <link rel="stylesheet" href="https://www.jaydonsun.com/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="Linux学习笔记-10" />
+<meta property="og:description" content="iptables与firewalld防火墙 配置网卡的4种方法 1.修改配置文件 ​ /etc/sysconfig/network-scripts/" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.jaydonsun.com/2020/05/linuxnote-10/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-05-22T22:00:40+00:00" />
+<meta property="article:modified_time" content="2020-05-22T22:00:40+00:00" />
+
+<meta itemprop="name" content="Linux学习笔记-10">
+<meta itemprop="description" content="iptables与firewalld防火墙 配置网卡的4种方法 1.修改配置文件 ​ /etc/sysconfig/network-scripts/"><meta itemprop="datePublished" content="2020-05-22T22:00:40+00:00" />
+<meta itemprop="dateModified" content="2020-05-22T22:00:40+00:00" />
+<meta itemprop="wordCount" content="3432">
+<meta itemprop="keywords" content="linux," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Linux学习笔记-10"/>
+<meta name="twitter:description" content="iptables与firewalld防火墙 配置网卡的4种方法 1.修改配置文件 ​ /etc/sysconfig/network-scripts/"/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/jaydonsun" target="_blank">
+            <img class="img-circle img-rotate" src="https://www.jaydonsun.com/avatar.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Jaydon</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Just do it !</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Beijing, China</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="想要查找什么..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">首页</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">归档</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">分类</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">标签</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">关于</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content"><p>Welcome to my blog~</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> 标签</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://www.jaydonsun.com/tags/cloudreve/" class="tag-list-link" rel="1">cloudreve<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/docker/" class="tag-list-link" rel="1">docker<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/linux/" class="tag-list-link" rel="18">linux<span
+               class="tag-list-count">18</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/lnmp/" class="tag-list-link" rel="2">lnmp<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/nginx/" class="tag-list-link" rel="1">nginx<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/wiznote/" class="tag-list-link" rel="1">wiznote<span
+               class="tag-list-count">1</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> 分类</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://www.jaydonsun.com/categories/cloudreve/" class="category-list-link">cloudreve</a><span class="category-list-count">1</span></li>
+            <li class="category-list-item"><a href="https://www.jaydonsun.com/categories/linux/" class="category-list-link">linux</a><span class="category-list-count">18</span></li>
+            <li class="category-list-item"><a href="https://www.jaydonsun.com/categories/lnmp/" class="category-list-link">lnmp</a><span class="category-list-count">1</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> 标签</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/cloudreve/" class="tag-list-link">cloudreve</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/docker/" class="tag-list-link">docker</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/linux/" class="tag-list-link">linux</a><span
+                    class="tag-list-count">18</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/lnmp/" class="tag-list-link">lnmp</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/nginx/" class="tag-list-link">nginx</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/wiznote/" class="tag-list-link">wiznote</a><span
+                    class="tag-list-count">1</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+<div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/docker-dockercompose-install/" class="title">Docker Dockercompose Install</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 16:45:14 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/wiznote-install/" class="title">Wiznote docker部署</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 15:38:39 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/cloudreve-service/" class="title">Cloudreve Service配置</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 12:13:40 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/lnmp-install-yum/" class="title">LNMP yum安装</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 12:00:46 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/centos7-docker-install/" class="title">Centos7安装Docker</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 11:03:26 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">文章目录</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2020/05/linuxnote-10/"
+    >Linux学习笔记-10</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://www.jaydonsun.com/2020/05/linuxnote-10/" class="article-date">
+  <time datetime="2020-05-22 22:00:40 &#43;0000 UTC" itemprop="datePublished">2020-05-22</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/linux/"> linux </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/linux/"> linux </a>
+  </span>
+
+        <span class="post-comment"><i class="icon icon-comment"></i>&nbsp;<a href="/2020/05/linuxnote-10/#comments"
+            class="article-comment-link">评论</a></span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 3432字</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 7分 </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <h2 id="iptables与firewalld防火墙">iptables与firewalld防火墙</h2>
+<h3 id="配置网卡的4种方法">配置网卡的4种方法</h3>
+<h4 id="1修改配置文件">1.修改配置文件</h4>
+<p>​	/etc/sysconfig/network-scripts/ifcfg-enoxxxx，保存后重启网卡 systemctl restart network</p>
+<h4 id="2nmtui">2.nmtui</h4>
+<p>​	RHEL 5/6 版本里是setup，7/8 版本里是nutui</p>
+<h4 id="3nm-connection-editor">3.nm-connection-editor</h4>
+<h4 id="4桌面右上角网卡图标">4.桌面右上角网卡图标</h4>
+<p>​	设置完后重新开关一下网卡</p>
+<h2 id="防火墙管理工具">防火墙管理工具</h2>
+<p>iptables与firewalld都不是真正的防火墙，它们都只是用来定义防火墙策略的防火墙管理工具而已，或者说，它们只是一种服务：
+iptables服务会把配置好的防火墙策略交由内核层面的netfilter网络过滤器来处理；
+firewalld服务则是把配置好的防火墙策略交由内核层面的nftables包过滤框架来处理。
+虽然这些工具各有优劣，但它们在防火墙策略的配置思路上是保持一致的</p>
+<h2 id="iptables">iptables</h2>
+<p>RHEL 7.1 版本后就没有了</p>
+<h3 id="策略与规则链">策略与规则链</h3>
+<p>防火墙会从上至下的顺序来读取配置的策略规则，在找到匹配项后就立即结束匹配工作并去执行匹配项中定义的行为（即放行或阻止）。如果在读取完所有的策略规则之后没有匹配项，就去执行默认的策略。一般而言，防火墙策略规则的设置有两种：一种是“通”（即放行），一种是“堵”（即阻止）。当防火墙的默认策略为拒绝时（堵），就要设置允许规则（通），否则谁都进不来；如果防火墙的默认策略为允许时，就要设置拒绝规则，否则谁都能进来，防火墙也就失去了防范的作用。</p>
+<p>iptables服务把用于处理或过滤流量的策略条目称之为规则，多条规则可以组成一个规则链，而规则链则依据数据包处理位置的不同进行分类，</p>
+<blockquote>
+<p>在进行路由选择前处理数据包（PREROUTING）；</p>
+<p>处理流入的数据包（INPUT）；</p>
+<p>处理流出的数据包（OUTPUT）；</p>
+<p>处理转发的数据包（FORWARD）；</p>
+<p>在进行路由选择后处理数据包（POSTROUTING）。</p>
+</blockquote>
+<h3 id="iptalbes基本命令">iptalbes基本命令</h3>
+<p>iptables中常用的参数以及作用</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-P</td>
+<td>设置默认策略</td>
+</tr>
+<tr>
+<td>-F</td>
+<td>清空规则链</td>
+</tr>
+<tr>
+<td>-L</td>
+<td>查看规则链</td>
+</tr>
+<tr>
+<td>-A</td>
+<td>在规则链的末尾加入新规则</td>
+</tr>
+<tr>
+<td>-I num</td>
+<td>在规则链的头部加入新规则</td>
+</tr>
+<tr>
+<td>-D num</td>
+<td>删除某一条规则</td>
+</tr>
+<tr>
+<td>-s</td>
+<td>匹配来源地址IP/MASK，加叹号“!”表示除这个IP外</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>匹配目标地址</td>
+</tr>
+<tr>
+<td>-i 网卡名称</td>
+<td>匹配从这块网卡流入的数据</td>
+</tr>
+<tr>
+<td>-o 网卡名称</td>
+<td>匹配从这块网卡流出的数据</td>
+</tr>
+<tr>
+<td>-p</td>
+<td>匹配协议，如TCP、UDP、ICMP</td>
+</tr>
+<tr>
+<td>&ndash;dport num</td>
+<td>匹配目标端口号</td>
+</tr>
+<tr>
+<td>&ndash;sport num</td>
+<td>匹配来源端口号</td>
+</tr>
+</tbody>
+</table>
+<h2 id="firewalld">firewalld</h2>
+<p>RHEL 7系统中集成了多款防火墙管理工具，其中firewalld（Dynamic Firewall Manager of Linux systems，Linux系统的动态防火墙管理器）服务是默认的防火墙配置管理工具，它拥有基于CLI（命令行界面）和基于GUI（图形用户界面）的两种管理方式。</p>
+<p>firewalld支持动态更新技术并加入了区域（zone）的概念。简单来说，区域就是firewalld预先准备了几套防火墙策略集合（策略模板），用户可以根据生产场景的不同而选择合适的策略集合，从而实现防火墙策略之间的快速切换。</p>
+<h3 id="firewalld中常用的区域名称及策略规则">firewalld中常用的区域名称及策略规则</h3>
+<table>
+<thead>
+<tr>
+<th>区域</th>
+<th>默认规则策略</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>trusted</td>
+<td>允许所有的数据包</td>
+</tr>
+<tr>
+<td>home</td>
+<td>拒绝流入的流量，除非与流出的流量相关；而如果流量与ssh、mdns、ipp-client、amba-client与dhcpv6-client服务相关，则允许流量</td>
+</tr>
+<tr>
+<td>internal</td>
+<td>等同于home区域</td>
+</tr>
+<tr>
+<td>work</td>
+<td>拒绝流入的流量，除非与流出的流量相关；而如果流量与ssh、ipp-client与dhcpv6-client服务相关，则允许流量</td>
+</tr>
+<tr>
+<td>public</td>
+<td>拒绝流入的流量，除非与流出的流量相关；而如果流量与ssh、dhcpv6-client服务相关，则允许流量</td>
+</tr>
+<tr>
+<td>external</td>
+<td>拒绝流入的流量，除非与流出的流量相关；而如果流量与ssh服务相关，则允许流量</td>
+</tr>
+<tr>
+<td>dmz</td>
+<td>拒绝流入的流量，除非与流出的流量相关；而如果流量与ssh服务相关，则允许流量</td>
+</tr>
+<tr>
+<td>block</td>
+<td>拒绝流入的流量，除非与流出的流量相关</td>
+</tr>
+<tr>
+<td>drop</td>
+<td>拒绝流入的流量，除非与流出的流量相关</td>
+</tr>
+</tbody>
+</table>
+<h2 id="终端管理工具">终端管理工具</h2>
+<h3 id="firewall-cmd">firewall-cmd</h3>
+<p>firewall-cmd是firewalld防火墙配置管理工具的CLI（命令行界面）版本，它的参数一般都是以“长格式”来提供的</p>
+<p>firewall-cmd命令中使用的参数以及作用</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&ndash;get-default-zone</td>
+<td>查询默认的区域名称</td>
+</tr>
+<tr>
+<td>&ndash;set-default-zone=&lt;区域名称&gt;</td>
+<td>设置默认的区域，使其永久生效</td>
+</tr>
+<tr>
+<td>&ndash;get-zones</td>
+<td>显示可用的区域</td>
+</tr>
+<tr>
+<td>&ndash;get-services</td>
+<td>显示预先定义的服务</td>
+</tr>
+<tr>
+<td>&ndash;get-active-zones</td>
+<td>显示当前正在使用的区域与网卡名称</td>
+</tr>
+<tr>
+<td>&ndash;add-source=</td>
+<td>将源自此IP或子网的流量导向指定的区域</td>
+</tr>
+<tr>
+<td>&ndash;remove-source=</td>
+<td>不再将源自此IP或子网的流量导向某个指定区域</td>
+</tr>
+<tr>
+<td>&ndash;add-interface=&lt;网卡名称&gt;</td>
+<td>将源自该网卡的所有流量都导向某个指定区域</td>
+</tr>
+<tr>
+<td>&ndash;change-interface=&lt;网卡名称&gt;</td>
+<td>将某个网卡与区域进行关联</td>
+</tr>
+<tr>
+<td>&ndash;list-all</td>
+<td>显示当前区域的网卡配置参数、资源、端口以及服务等信息</td>
+</tr>
+<tr>
+<td>&ndash;list-all-zones</td>
+<td>显示所有区域的网卡配置参数、资源、端口以及服务等信息</td>
+</tr>
+<tr>
+<td>&ndash;add-service=&lt;服务名&gt;</td>
+<td>设置默认区域允许该服务的流量</td>
+</tr>
+<tr>
+<td>&ndash;add-port=&lt;端口号/协议&gt;</td>
+<td>设置默认区域允许该端口的流量</td>
+</tr>
+<tr>
+<td>&ndash;remove-service=&lt;服务名&gt;</td>
+<td>设置默认区域不再允许该服务的流量</td>
+</tr>
+<tr>
+<td>&ndash;remove-port=&lt;端口号/协议&gt;</td>
+<td>设置默认区域不再允许该端口的流量</td>
+</tr>
+<tr>
+<td>&ndash;reload</td>
+<td>让“永久生效”的配置规则立即生效，并覆盖当前的配置规则</td>
+</tr>
+<tr>
+<td>&ndash;panic-on</td>
+<td>开启应急状况模式</td>
+</tr>
+<tr>
+<td>&ndash;panic-off</td>
+<td>关闭应急状况模式</td>
+</tr>
+</tbody>
+</table>
+<p>与Linux系统中其他的防火墙策略配置工具一样，使用firewalld配置的防火墙策略默认为运行时（Runtime）模式，又称为当前生效模式，而且随着系统的重启会失效。如果想让配置策略一直存在，就需要使用永久（Permanent）模式了，方法就是在用firewall-cmd命令正常设置防火墙策略时添加&ndash;permanent参数，这样配置的防火墙策略就可以永久生效了。设置的策略只有在系统重启之后才能自动生效。如果想让配置的策略立即生效，需要手动执行firewall-cmd &ndash;reload命令。</p>
+<h2 id="图形管理工具">图形管理工具</h2>
+<h3 id="firewall-config">firewall-config</h3>
+<p>​	firewalld防火墙配置管理工具的GUI（图形用户界面）版本，几乎可以实现所有以命令行来执行的操作</p>
+<p><strong>1</strong>：选择运行时（Runtime）模式或永久（Permanent）模式的配置。</p>
+<p><strong>2</strong>：可选的策略集合区域列表。</p>
+<p><strong>3</strong>：常用的系统服务列表。</p>
+<p><strong>4</strong>：当前正在使用的区域。</p>
+<p><strong>5</strong>：管理当前被选中区域中的服务。</p>
+<p><strong>6</strong>：管理当前被选中区域中的端口。</p>
+<p><strong>7</strong>：开启或关闭SNAT（源地址转换协议）技术。</p>
+<p><strong>8</strong>：设置端口转发策略。</p>
+<p><strong>9</strong>：控制请求icmp服务的流量。</p>
+<p><strong>10</strong>：管理防火墙的富规则。</p>
+<p><strong>11</strong>：管理网卡设备。</p>
+<p><strong>12</strong>：被选中区域的服务，若勾选了相应服务前面的复选框，则表示允许与之相关的流量。</p>
+<p><strong>13</strong>：firewall-config工具的运行状态。
+<img src="https://img-blog.csdnimg.cn/20200525160152745.png" alt="在这里插入图片描述"></p>
+<h2 id="服务的访问控制列表">服务的访问控制列表</h2>
+<h3 id="tcp-wrappers">TCP Wrappers</h3>
+<p>TCP Wrappers是RHEL 7系统中默认启用的一款流量监控程序，它能够根据来访主机的地址与本机的目标服务程序作出允许或拒绝的操作。换句话说，Linux系统中其实有两个层面的防火墙，第一种是前面讲到的基于TCP/IP协议的流量过滤工具，而TCP Wrappers服务则是能允许或禁止Linux系统提供服务的防火墙，从而在更高层面保护了Linux系统的安全运行。</p>
+<p>TCP Wrappers服务的防火墙策略由两个控制列表文件所控制，用户可以编辑允许控制列表文件来放行对服务的请求流量，也可以编辑拒绝控制列表文件来阻止对服务的请求流量。控制列表文件修改后会立即生效，系统将会先检查允许控制列表文件（/etc/hosts.allow），如果匹配到相应的允许策略则放行流量；如果没有匹配，则去进一步匹配拒绝控制列表文件（/etc/hosts.deny），若找到匹配项则拒绝该流量。如果这两个文件全都没有匹配到，则默认放行流量。</p>
+<p>TCP Wrappers服务的控制列表文件中常用的参数</p>
+<table>
+<thead>
+<tr>
+<th>客户端类型</th>
+<th>示例</th>
+<th>满足示例的客户端列表</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>单一主机</td>
+<td>192.168.10.10</td>
+<td>IP地址为192.168.10.10的主机</td>
+</tr>
+<tr>
+<td>指定网段</td>
+<td>192.168.10.</td>
+<td>IP段为192.168.10.0/24的主机</td>
+</tr>
+<tr>
+<td>指定网段</td>
+<td>192.168.10.0/255.255.255.0</td>
+<td>IP段为192.168.10.0/24的主机</td>
+</tr>
+<tr>
+<td>指定DNS后缀</td>
+<td>.linuxprobe.com</td>
+<td>所有DNS后缀为.linuxprobe.com的主机</td>
+</tr>
+<tr>
+<td>指定主机名称</td>
+<td><a href="http://www.linuxprobe.com">www.linuxprobe.com</a></td>
+<td>主机名称为www.linuxprobe.com的主机</td>
+</tr>
+<tr>
+<td>指定所有客户端</td>
+<td>ALL</td>
+<td>所有主机全部包括在内</td>
+</tr>
+</tbody>
+</table>
+<p>在配置TCP Wrappers服务时需要遵循两个原则：</p>
+<ol>
+<li>编写拒绝策略规则时，填写的是服务名称，而非协议名称；</li>
+<li>建议先编写拒绝策略规则，再编写允许策略规则，以便直观地看到相应的效果。</li>
+</ol>
+<p><img src="https://img-blog.csdnimg.cn/20200525160228288.png" alt="在这里插入图片描述"></p>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接: </strong>
+      <a href="https://www.jaydonsun.com/2020/05/linuxnote-10/" title="Linux学习笔记-10" target="_blank" rel="external">https://www.jaydonsun.com/2020/05/linuxnote-10/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN</a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/jaydonsun" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://www.jaydonsun.com/avatar.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/jaydonsun" target="_blank"><span class="text-dark">Jaydon</span><small class="ml-1x">Just do it !</small></a></h3>
+        <div>Good Good Study, Day Day Up~</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+<section id="comments">
+    <div id="vcomments"></div>
+</section>
+
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://www.jaydonsun.com/2020/05/linuxnote-9/" title="Linux学习笔记-9"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;下一篇</span></a>
+            </li>
+            <li class="next">
+                <a href="https://www.jaydonsun.com/2020/05/linuxnote-11/"
+                    title="Linux学习笔记-11"><span>上一篇&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="文章目录" role="button">
+                    <span>[&nbsp;</span><span>文章目录</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/jaydonsun" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://www.jaydonsun.com/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2014  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://www.jaydonsun.com/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://www.jaydonsun.com/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(未命名)',
+            },
+            ROOT_URL: 'https:\/\/www.jaydonsun.com',
+            CONTENT_URL: 'https:\/\/www.jaydonsun.com\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://www.jaydonsun.com/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine"></script>
+<script type="text/javascript">
+    var GUEST = ['nick', 'mail', 'link'];
+    var meta = 'nick,mail';
+    meta = meta.split(',').filter(function (item) {
+        return GUEST.indexOf(item) > -1;
+    });
+    new Valine({
+        el: '#vcomments',
+        verify: true ,
+        notify: true ,
+        appId: 'V23xBss1BLY3Vue4w4MTnKbM-gzGzoHsz',
+        appKey: 'zD0uQrt4260z4n26rd767o7d',
+        placeholder: '说两句吧~',
+        avatar: 'mm',
+        meta: meta,
+        pageSize: '10' || 10,
+        visitor: false 
+});
+</script>
+
+  </body>
+</html>

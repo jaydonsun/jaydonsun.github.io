@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <title>
+        Linux学习笔记-11 - Jaydon&#39;s Blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="使用ssh服务管理远程主机 配置网卡 4种配置方式 创建网络会话 RHEL和CentOS系统默认使用NetworkManager来提供网络服务，这是" />
+    <meta name="generator" content="Hugo 0.85.0 with theme pure" />
+    <title>Linux学习笔记-11 - Jaydon&#39;s Blog</title>
+    
+    
+    <link rel="stylesheet" href="https://www.jaydonsun.com/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="Linux学习笔记-11" />
+<meta property="og:description" content="使用ssh服务管理远程主机 配置网卡 4种配置方式 创建网络会话 RHEL和CentOS系统默认使用NetworkManager来提供网络服务，这是" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.jaydonsun.com/2020/05/linuxnote-11/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-05-23T23:01:07+00:00" />
+<meta property="article:modified_time" content="2020-05-23T23:01:07+00:00" />
+
+<meta itemprop="name" content="Linux学习笔记-11">
+<meta itemprop="description" content="使用ssh服务管理远程主机 配置网卡 4种配置方式 创建网络会话 RHEL和CentOS系统默认使用NetworkManager来提供网络服务，这是"><meta itemprop="datePublished" content="2020-05-23T23:01:07+00:00" />
+<meta itemprop="dateModified" content="2020-05-23T23:01:07+00:00" />
+<meta itemprop="wordCount" content="2691">
+<meta itemprop="keywords" content="linux," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Linux学习笔记-11"/>
+<meta name="twitter:description" content="使用ssh服务管理远程主机 配置网卡 4种配置方式 创建网络会话 RHEL和CentOS系统默认使用NetworkManager来提供网络服务，这是"/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/jaydonsun" target="_blank">
+            <img class="img-circle img-rotate" src="https://www.jaydonsun.com/avatar.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Jaydon</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Just do it !</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Beijing, China</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="想要查找什么..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">首页</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">归档</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">分类</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">标签</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">关于</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content"><p>Welcome to my blog~</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> 标签</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://www.jaydonsun.com/tags/cloudreve/" class="tag-list-link" rel="1">cloudreve<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/docker/" class="tag-list-link" rel="1">docker<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/linux/" class="tag-list-link" rel="18">linux<span
+               class="tag-list-count">18</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/lnmp/" class="tag-list-link" rel="2">lnmp<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/nginx/" class="tag-list-link" rel="1">nginx<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://www.jaydonsun.com/tags/wiznote/" class="tag-list-link" rel="1">wiznote<span
+               class="tag-list-count">1</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> 分类</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://www.jaydonsun.com/categories/cloudreve/" class="category-list-link">cloudreve</a><span class="category-list-count">1</span></li>
+            <li class="category-list-item"><a href="https://www.jaydonsun.com/categories/linux/" class="category-list-link">linux</a><span class="category-list-count">18</span></li>
+            <li class="category-list-item"><a href="https://www.jaydonsun.com/categories/lnmp/" class="category-list-link">lnmp</a><span class="category-list-count">1</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> 标签</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/cloudreve/" class="tag-list-link">cloudreve</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/docker/" class="tag-list-link">docker</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/linux/" class="tag-list-link">linux</a><span
+                    class="tag-list-count">18</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/lnmp/" class="tag-list-link">lnmp</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/nginx/" class="tag-list-link">nginx</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://www.jaydonsun.com/tags/wiznote/" class="tag-list-link">wiznote</a><span
+                    class="tag-list-count">1</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+<div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/docker-dockercompose-install/" class="title">Docker Dockercompose Install</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 16:45:14 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/wiznote-install/" class="title">Wiznote docker部署</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 15:38:39 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/cloudreve-service/" class="title">Cloudreve Service配置</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 12:13:40 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/lnmp-install-yum/" class="title">LNMP yum安装</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 12:00:46 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://www.jaydonsun.com/2021/07/centos7-docker-install/" class="title">Centos7安装Docker</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-22 11:03:26 &#43;0800 CST" itemprop="datePublished">2021-07-22</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">文章目录</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2020/05/linuxnote-11/"
+    >Linux学习笔记-11</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://www.jaydonsun.com/2020/05/linuxnote-11/" class="article-date">
+  <time datetime="2020-05-23 23:01:07 &#43;0000 UTC" itemprop="datePublished">2020-05-23</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/linux/"> linux </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/linux/"> linux </a>
+  </span>
+
+        <span class="post-comment"><i class="icon icon-comment"></i>&nbsp;<a href="/2020/05/linuxnote-11/#comments"
+            class="article-comment-link">评论</a></span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 2691字</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 6分 </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <h2 id="使用ssh服务管理远程主机">使用ssh服务管理远程主机</h2>
+<h3 id="配置网卡">配置网卡</h3>
+<h4 id="4种配置方式">4种配置方式</h4>
+<h3 id="创建网络会话">创建网络会话</h3>
+<p>RHEL和CentOS系统默认使用NetworkManager来提供网络服务，这是一种动态管理网络配置的守护进程，能够让网络设备保持连接状态。可以使用nmcli命令来管理Network Manager服务。nmcli是一款基于命令行的网络配置工具，功能丰富，参数众多。它可以轻松地查看网络信息或网络状态</p>
+<p><img src="https://img-blog.csdnimg.cn/20200525161403447.png" alt="在这里插入图片描述"></p>
+<p>RHEL7系统支持网络会话功能，允许用户在多个配置文件中快速切换（非常类似于firewalld防火墙服务中的区域技术）。如果我们在公司网络中使用笔记本电脑时需要手动指定网络的IP地址，而回到家中则是使用DHCP自动分配IP地址。这就需要麻烦地频繁修改IP地址，但是使用了网络会话功能后一切就简单多了—只需在不同的使用环境中激活相应的网络会话，就可以实现网络配置信息的自动切换了。</p>
+<blockquote>
+<p>使用nmcli命令按照&quot;connection add con-name type ifname&quot;的格式来创建网络会话</p>
+<p>使用con-name参数指定公司所使用的网络会话名称，然后用ifname参数指定本机的网卡名称</p>
+<p>使用con-namme参数指定家庭所使用的网络会话名称</p>
+<p>使用nmcli命令查看创建的所有网络会话</p>
+<p>使用nmcli命令配置过的网络会话是永久生效的</p>
+</blockquote>
+<h3 id="远程控制服务">远程控制服务</h3>
+<h4 id="配置sshd服务">配置sshd服务</h4>
+<p>SSH（Secure Shell）是一种能够以安全的方式提供远程登录的协议，也是目前远程管理Linux系统的首选方式。在此之前，一般使用FTP或Telnet来进行远程登录。但是因为它们以明文的形式在网络中传输账户密码和数据信息，因此很不安全，很容易受到黑客发起的中间人攻击，这轻则篡改传输的数据信息，重则直接抓取服务器的账户密码。</p>
+<p>想要使用SSH协议来远程管理Linux系统，则需要部署配置sshd服务程序。sshd是基于SSH协议开发的一款远程管理服务程序，不仅使用起来方便快捷，而且能够提供两种安全验证的方法：</p>
+<blockquote>
+<p>基于口令的验证—用账户和密码来验证登录；</p>
+<p>基于密钥的验证—需要在本地生成密钥对，然后把密钥对中的公钥上传至服务器，并与服务器中的公钥进行比较；该方式相较来说更安全。</p>
+</blockquote>
+<h5 id="常用参数以及作用">常用参数以及作用</h5>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Port 22</td>
+<td>默认的sshd服务端口</td>
+</tr>
+<tr>
+<td>ListenAddress 0.0.0.0</td>
+<td>设定sshd服务器监听的IP地址</td>
+</tr>
+<tr>
+<td>Protocol 2</td>
+<td>SSH协议的版本号</td>
+</tr>
+<tr>
+<td>HostKey /tc/ssh/ssh_host_key</td>
+<td>SSH协议版本为1时，DES私钥存放的位置</td>
+</tr>
+<tr>
+<td>HostKey /etc/ssh/ssh_host_rsa_key</td>
+<td>SSH协议版本为2时，RSA私钥存放的位置</td>
+</tr>
+<tr>
+<td>HostKey /etc/ssh/ssh_host_dsa_key</td>
+<td>SSH协议版本为2时，DSA私钥存放的位置</td>
+</tr>
+<tr>
+<td>PermitRootLogin yes</td>
+<td>设定是否允许root管理员直接登录</td>
+</tr>
+<tr>
+<td>StrictModes yes</td>
+<td>当远程用户的私钥改变时直接拒绝连接</td>
+</tr>
+<tr>
+<td>MaxAuthTries 6</td>
+<td>最大密码尝试次数</td>
+</tr>
+<tr>
+<td>MaxSessions 10</td>
+<td>最大终端数</td>
+</tr>
+<tr>
+<td>PasswordAuthentication yes</td>
+<td>是否允许密码验证</td>
+</tr>
+<tr>
+<td>PermitEmptyPasswords no</td>
+<td>是否允许空密码登录（很不安全）</td>
+</tr>
+</tbody>
+</table>
+<h4 id="安全密钥验证">安全密钥验证</h4>
+<h5 id="1在客户端主机中生成密钥对">1.在客户端主机中生成“密钥对”</h5>
+<pre><code class="language-shell">[root@linuxprobe ~]# ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/root/.ssh/id_rsa):按回车键或设置密钥的存储路径
+Created directory '/root/.ssh'.
+Enter passphrase (empty for no passphrase):直接按回车键或设置密钥的密码
+Enter same passphrase again:再次按回车键或设置密钥的密码
+Your identification has been saved in /root/.ssh/id_rsa.
+Your public key has been saved in /root/.ssh/id_rsa.pub.
+Your identification has been saved in /root/.ssh/id_rsa.
+Your public key has been saved in /root/.ssh/id_rsa.pub.
+The key fingerprint is:
+40:32:48:18:e4:ac:c0:c3:c1:ba:7c:6c:3a:a8:b5:22 root@linuxprobe.com
+The key's randomart image is:
++--[ RSA 2048]----+
+|+*..o .          |
+|*.o  +           |
+|o*    .          |
+|+ .    .         |
+|o..     S        |
+|.. +             |
+|. =              |
+|E+ .             |
+|+.o             |
++-----------------+
+</code></pre>
+<h5 id="2把客户端主机中生成的公钥文件传送至远程主机">2.把客户端主机中生成的公钥文件传送至远程主机</h5>
+<pre><code class="language-shell">[root@linuxprobe ~]# ssh-copy-id 192.168.10.10
+The authenticity of host '192.168.10.20 (192.168.10.10)' can't be established.
+ECDSA key fingerprint is 4f:a7:91:9e:8d:6f:b9:48:02:32:61:95:48:ed:1e:3f.
+Are you sure you want to continue connecting (yes/no)? yes
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+root@192.168.10.10's password:此处输入远程服务器密码
+Number of key(s) added: 1
+Now try logging into the machine, with: &quot;ssh '192.168.10.10'&quot;
+and check to make sure that only the key(s) you wanted were added.
+</code></pre>
+<h5 id="3对服务器进行设置使其只允许密钥验证拒绝传统的口令验证方式记得在修改配置文件后保存并重启sshd服务程序">3.对服务器进行设置，使其只允许密钥验证，拒绝传统的口令验证方式。记得在修改配置文件后保存并重启sshd服务程序</h5>
+<pre><code class="language-shell">[root@linuxprobe ~]# vim /etc/ssh/sshd_config 
+ ………………省略部分输出信息………………
+ 74 
+ 75 # To disable tunneled clear text passwords, change to no here!
+ 76 #PasswordAuthentication yes
+ 77 #PermitEmptyPasswords no
+ 78 PasswordAuthentication no
+ 79 
+ ………………省略部分输出信息………………
+[root@linuxprobe ~]# systemctl restart sshd
+</code></pre>
+<h5 id="4在客户端尝试登录到服务器此时无须输入密码也可成功登录">4.在客户端尝试登录到服务器，此时无须输入密码也可成功登录</h5>
+<pre><code class="language-shell">[root@linuxprobe ~]# ssh 192.168.10.10
+Last login: Mon May 23 11:24:56 2020
+</code></pre>
+<h3 id="远程传输命令">远程传输命令</h3>
+<h4 id="scp">scp</h4>
+<p>scp（secure copy）是一个基于SSH协议在网络之间进行安全传输的命令，其格式为“scp [参数] 本地文件 远程帐户@远程IP地址:远程目录”</p>
+<p>scp与cp命令不同，cp命令只能在本地硬盘中进行文件复制，而scp不仅能够通过网络传送数据，而且所有的数据都将进行加密处理。例如，如果想把一些文件通过网络从一台主机传递到其他主机，这两台主机又恰巧是Linux系统，这时使用scp命令就可以轻松完成文件的传递了。</p>
+<p>scp命令中可用的参数及作用</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-v</td>
+<td>显示详细的连接进度</td>
+</tr>
+<tr>
+<td>-P</td>
+<td>指定远程主机的sshd端口号</td>
+</tr>
+<tr>
+<td>-r</td>
+<td>用于传送文件夹</td>
+</tr>
+<tr>
+<td>-6</td>
+<td>使用IPv6协议</td>
+</tr>
+</tbody>
+</table>
+<p>在使用scp命令把文件从本地复制到远程主机时，首先需要以绝对路径的形式写清本地文件的存放位置。如果要传送整个文件夹内的所有数据，还需要额外添加参数-r进行递归操作。然后写上要传送到的远程主机的IP地址，远程服务器便会要求进行身份验证了。当前用户名称为root，而密码则为远程服务器的密码。如果想使用指定用户的身份进行验证，可使用用户名@主机地址的参数格式。最后需要在远程主机的IP地址后面添加冒号，并在后面写上要传送到远程主机的哪个文件夹中。只要参数正确并且成功验证了用户身份，即可开始传送工作。</p>
+<p>此外，还可以使用scp命令把远程主机上的文件下载到本地主机，其命令格式为“scp [参数] 远程用户@远程IP地址:远程文件 本地目录”。</p>
+<h3 id="不间断会话服务">不间断会话服务</h3>
+<h4 id="screen">screen</h4>
+<p>screen是一款能够实现多窗口远程控制的开源服务程序，简单来说就是为了解决网络异常中断或为了同时控制多个远程终端窗口而设计的程序。用户还可以使用screen服务程序同时在多个远程会话中自由切换，能够做到实现如下功能</p>
+<blockquote>
+<p><strong>会话恢复</strong>：即便网络中断，也可让会话随时恢复，确保用户不会失去对远程会话的控制。</p>
+<p><strong>多窗口</strong>：每个会话都是独立运行的，拥有各自独立的输入输出终端窗口，终端窗口内显示过的信息也将被分开隔离保存，以便下次使用时依然能看到之前的操作记录。</p>
+<p><strong>会话共享</strong>：当多个用户同时登录到远程服务器时，便可以使用会话共享功能让用户之间的输入输出信息共享。</p>
+</blockquote>
+<h5 id="管理远程会话">管理远程会话</h5>
+<blockquote>
+<p>screen -S 创建会话窗口；</p>
+<p>screen -d 将指定会话进行离线处理；</p>
+<p>screen -r 恢复指定会话；</p>
+<p>screen -x 一次性恢复所有的会话；</p>
+<p>screen -ls 显示当前已有的会话；</p>
+<p>screen -wipe 把目前无法使用的会话删除。</p>
+<p>……</p>
+</blockquote>
+<h5 id="会话共享功能">会话共享功能</h5>
+<p>screen命令不仅可以确保用户在极端情况下也不丢失对系统的远程控制，保证了生产环境中远程工作的不间断性，而且它还具有会话共享、分屏切割、会话锁定等实用的功能。其中，会话共享功能是一件很酷的事情，当多个用户同时控制主机的时候，它可以把屏幕内容共享出来，也就是说每个用户都可以看到相同的内容。</p>
+<p><img src="https://img-blog.csdnimg.cn/20200525161416194.png" alt="在这里插入图片描述"></p>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接: </strong>
+      <a href="https://www.jaydonsun.com/2020/05/linuxnote-11/" title="Linux学习笔记-11" target="_blank" rel="external">https://www.jaydonsun.com/2020/05/linuxnote-11/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN</a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/jaydonsun" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://www.jaydonsun.com/avatar.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/jaydonsun" target="_blank"><span class="text-dark">Jaydon</span><small class="ml-1x">Just do it !</small></a></h3>
+        <div>Good Good Study, Day Day Up~</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+<section id="comments">
+    <div id="vcomments"></div>
+</section>
+
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://www.jaydonsun.com/2020/05/linuxnote-10/" title="Linux学习笔记-10"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;下一篇</span></a>
+            </li>
+            <li class="next">
+                <a href="https://www.jaydonsun.com/2020/05/linuxnote-12/"
+                    title="Linux学习笔记-12"><span>上一篇&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="文章目录" role="button">
+                    <span>[&nbsp;</span><span>文章目录</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/jaydonsun" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://www.jaydonsun.com/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2014  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://www.jaydonsun.com/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://www.jaydonsun.com/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(未命名)',
+            },
+            ROOT_URL: 'https:\/\/www.jaydonsun.com',
+            CONTENT_URL: 'https:\/\/www.jaydonsun.com\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://www.jaydonsun.com/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine"></script>
+<script type="text/javascript">
+    var GUEST = ['nick', 'mail', 'link'];
+    var meta = 'nick,mail';
+    meta = meta.split(',').filter(function (item) {
+        return GUEST.indexOf(item) > -1;
+    });
+    new Valine({
+        el: '#vcomments',
+        verify: true ,
+        notify: true ,
+        appId: 'V23xBss1BLY3Vue4w4MTnKbM-gzGzoHsz',
+        appKey: 'zD0uQrt4260z4n26rd767o7d',
+        placeholder: '说两句吧~',
+        avatar: 'mm',
+        meta: meta,
+        pageSize: '10' || 10,
+        visitor: false 
+});
+</script>
+
+  </body>
+</html>
